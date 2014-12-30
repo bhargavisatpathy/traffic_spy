@@ -17,6 +17,18 @@ module TrafficSpy
       erb :index
     end
 
+    post '/sources' do
+
+      if params["identifier"].nil? || params["rootUrl"].nil?
+        status 400
+        body "Missing parameters"
+      else
+        DB.from(:identifiers).insert(:identifier => params["identifier"], :rooturl => params["rootUrl"])
+        status 200
+        body "Success"
+      end
+    end
+
     not_found do
       erb :error
     end
