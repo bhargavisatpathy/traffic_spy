@@ -22,8 +22,12 @@ module TrafficSpy
       if params["identifier"].nil? || params["rootUrl"].nil?
         status 400
         body "Missing parameters"
+      elsif DB.from(:identifiers).select(:identifier).to_a.any?{ |identifier| identifier[:identifier] == params[:identifier] }
+        status 403
+        body "Identifier already exists"
       else
         DB.from(:identifiers).insert(:identifier => params["identifier"], :rooturl => params["rootUrl"])
+        #p DB.from(:identifiers).select(:identifier).to_a
         status 200
         body "Success"
       end
