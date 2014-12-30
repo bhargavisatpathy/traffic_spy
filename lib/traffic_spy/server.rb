@@ -27,7 +27,7 @@ module TrafficSpy
         body "Identifier already exists"
       else
         DB.from(:identifiers).insert(:identifier => params["identifier"], :rooturl => params["rootUrl"])
-        #p DB.from(:identifiers).select(:identifier).to_a
+        # => p DB.from(:identifiers).select(:identifier).to_a
         status 200
         body "Success"
       end
