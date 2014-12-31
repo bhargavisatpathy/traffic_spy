@@ -45,6 +45,12 @@ module TrafficSpy
       else
         payload_hash = JSON.parse(params[:payload])
         incoming_url = payload_hash["url"]
+        incomng_identifier = params["identifier"]
+        requested_at = payload_hash["requested_at"]
+        responded_in = payload_hash["responded_in"]
+        incoming_referred_by = payload_hash["referred_by"]
+        referred_by_id = referred_by_table(incoming_referred_by)
+
         puts "Incoming URL: #{incoming_url}"
 
         if DB.from(:urls).select(:url).to_a.any? {|item| item[:url] == incoming_url }
@@ -53,21 +59,31 @@ module TrafficSpy
         else
           puts "we didn't find it"
           DB.from(:urls).insert(:url => incoming_url)
-          url_id =  DB.from(:urls).where(:url => incoming_url)
+          url_id = DB.from(:urls).where(:url => incoming_url)
           # url_id = DB.from("urls").select("id").where("url" => incoming_url)
-
         end
       end
-      puts url_id.to_a[0][:id]
-
-
-        status 200
-
+      puts "url_id #{url_id.to_a[0][:id]}"
+      puts "referred_by_id: #{referred_by_id}"
+      status 200
     end
 
     not_found do
       erb :error
     end
-  end
 
+
+    def referred_by_table(incoming_referred_by)
+      if DB.from(:referred_bys).select(:referred_by).to_a.any? {|item| item[:referred_by] == incoming_referred_by }
+        referred_by_id = DB.from(:referred_bys).select(:id).where(:referred_by => incoming_referred_by)
+        puts "We found it"
+      else
+        puts "we didn't find it"
+        DB.from(:referred_bys).insert(:referred_by => incoming_referred_by)
+        referred_by_id = DB.from(:referred_bys).where(:referred_by => incoming_referred_by)
+        # url_id = DB.from("urls").select("id").where("url" => incoming_url)
+      end
+      referred_by_id.to_a[0][:id]
+    end
+  end
 end
