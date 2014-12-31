@@ -48,8 +48,16 @@ module TrafficSpy
         incomng_identifier = params["identifier"]
         requested_at = payload_hash["requested_at"]
         responded_in = payload_hash["responded_in"]
+
         incoming_referred_by = payload_hash["referred_by"]
         referred_by_id = referred_by_table(incoming_referred_by)
+
+        incoming_request_type =payload_hash["request_type"]
+        request_type_id = find_request_type_id(incoming_request_type)
+
+        resolution_width = payload_hash["resolutionWidth"]
+        resolution_height = payload_hash["resolutionHeight"]
+        resolution_id = find_resolution_id(resolution_width, resolution_height)
 
         puts "Incoming URL: #{incoming_url}"
 
@@ -65,6 +73,8 @@ module TrafficSpy
       end
       puts "url_id #{url_id.to_a[0][:id]}"
       puts "referred_by_id: #{referred_by_id}"
+      puts "request_type_id: #{request_type_id}"
+      puts "resolution_id: #{resolution_id}"
       status 200
     end
 
@@ -84,6 +94,30 @@ module TrafficSpy
         # url_id = DB.from("urls").select("id").where("url" => incoming_url)
       end
       referred_by_id.to_a[0][:id]
+    end
+
+    def find_request_type_id(incoming_request_type)
+      if DB.from(:request_types).select(:request_type).to_a.any? {|item| item[:request_type] == incoming_request_type }
+        request_type_id = DB.from(:request_types).select(:id).where(:request_type => incoming_request_type)
+        puts "We found it"
+      else
+        puts "we didn't find it"
+        DB.from(:request_types).insert(:request_type => incoming_request_type)
+        request_type_id = DB.from(:request_types).where(:request_type => incoming_request_type)
+      end
+      request_type_id.to_a[0][:id]
+    end
+
+    def find_resolution_id(resolution_width, resolution_height)
+      if DB.from(:resolutions).select(:width, :height).to_a.any? {|item| item[:width] == resolution_width && item[:height] == resolution_height}
+        request_type_id = DB.from(:resolutions).select(:id).where(:width => resolution_width).where(:height => resolution_height)
+        puts "We found it"
+      else
+        puts "we didn't find it"
+        DB.from(:resolutions).insert(:width => resolution_width, :height => resolution_height)
+        resolution_id = DB.from(:resolutions).where(:width => resolution_width, :height => resolution_height)
+      end
+      resolution_id.to_a[0][:id]
     end
   end
 end
