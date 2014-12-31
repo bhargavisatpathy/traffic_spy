@@ -70,9 +70,9 @@ module TrafficSpy
 
         if DB.from(:urls).select(:url).to_a.any? {|item| item[:url] == incoming_url }
           url_id = DB.from(:urls).select(:id).where(:url => incoming_url)
-          puts "We found it"
+          puts "We found URL ID"
         else
-          puts "we didn't find it"
+          puts "we didn't find URL ID"
           DB.from(:urls).insert(:url => incoming_url)
           url_id = DB.from(:urls).where(:url => incoming_url)
           # url_id = DB.from("urls").select("id").where("url" => incoming_url)
@@ -96,9 +96,9 @@ module TrafficSpy
     def referred_by_table(incoming_referred_by)
       if DB.from(:referred_bys).select(:referred_by).to_a.any? {|item| item[:referred_by] == incoming_referred_by }
         referred_by_id = DB.from(:referred_bys).select(:id).where(:referred_by => incoming_referred_by)
-        puts "We found it"
+        puts "We found referred by"
       else
-        puts "we didn't find it"
+        puts "we didn't find referred by"
         DB.from(:referred_bys).insert(:referred_by => incoming_referred_by)
         referred_by_id = DB.from(:referred_bys).where(:referred_by => incoming_referred_by)
         # url_id = DB.from("urls").select("id").where("url" => incoming_url)
@@ -109,9 +109,9 @@ module TrafficSpy
     def find_request_type_id(incoming_request_type)
       if DB.from(:request_types).select(:request_type).to_a.any? {|item| item[:request_type] == incoming_request_type }
         request_type_id = DB.from(:request_types).select(:id).where(:request_type => incoming_request_type)
-        puts "We found it"
+        puts "We found request type"
       else
-        puts "we didn't find it"
+        puts "we didn't find request type"
         DB.from(:request_types).insert(:request_type => incoming_request_type)
         request_type_id = DB.from(:request_types).where(:request_type => incoming_request_type)
       end
@@ -123,7 +123,7 @@ module TrafficSpy
         resolution_id = DB.from(:resolutions).select(:id).where(:width => resolution_width).where(:height => resolution_height)
         puts "We found resolution"
       else
-        puts "we didn't find it"
+        puts "we didn't find resolution"
         DB.from(:resolutions).insert(:width => resolution_width, :height => resolution_height)
         resolution_id = DB.from(:resolutions).where(:width => resolution_width, :height => resolution_height)
       end
@@ -133,9 +133,9 @@ module TrafficSpy
     def event_names_table(incoming_event_name)
       if DB.from(:event_names).select(:event_name).to_a.any? {|item| item[:event_name] == incoming_event_name }
         event_name_id = DB.from(:event_names).select(:id).where(:event_name => incoming_event_name)
-        puts "We found it"
+        puts "We found event name"
       else
-        puts "we didn't find it"
+        puts "we didn't find event name"
         DB.from(:event_names).insert(:event_name => incoming_event_name)
         event_name_id = DB.from(:event_names).where(:event_name => incoming_event_name)
         # url_id = DB.from("urls").select("id").where("url" => incoming_url)
@@ -146,9 +146,9 @@ module TrafficSpy
     def user_agents_table(incoming_user_agent)
       if DB.from(:user_agents).select(:user_agent).to_a.any? {|item| item[:user_agent] == incoming_user_agent }
         user_agent_id = DB.from(:user_agents).select(:id).where(:user_agent => incoming_user_agent)
-        puts "We found it"
+        puts "We found user agents"
       else
-        puts "we didn't find it"
+        puts "we didn't find user agents"
         DB.from(:user_agents).insert(:user_agent => incoming_user_agent)
         user_agent_id = DB.from(:user_agents).where(:user_agent => incoming_user_agent)
         # url_id = DB.from("urls").select("id").where("url" => incoming_url)
@@ -159,9 +159,9 @@ module TrafficSpy
     def ip_table(incoming_ip)
       if DB.from(:ips).select(:ip).to_a.any? {|item| item[:ip] == incoming_ip }
         ip_id = DB.from(:ips).select(:id).where(:ip => incoming_ip)
-        puts "We found it"
+        puts "We found ip"
       else
-        puts "we didn't find it"
+        puts "we didn't find ip"
         DB.from(:ips).insert(:ip => incoming_ip)
         ip_id = DB.from(:ips).where(:ip => incoming_ip)
         # url_id = DB.from("urls").select("id").where("url" => incoming_url)
