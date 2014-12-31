@@ -15,3 +15,12 @@ end
 # @example
 #
 # require 'traffic_spy/models/request'
+require 'traffic_spy/models/event_name'
+require 'traffic_spy/models/identifier'
+require 'traffic_spy/models/ip'
+require 'traffic_spy/models/payload'
+require 'traffic_spy/models/referred_by'
+require 'traffic_spy/models/request_type'
+require 'traffic_spy/models/resolution'
+require 'traffic_spy/models/url'
+require 'traffic_spy/models/user_agent'
