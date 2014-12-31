@@ -19,7 +19,6 @@ module TrafficSpy
     end
 
     post '/sources' do
-
       if params["identifier"].nil? || params["rootUrl"].nil?
         status 400
         body "Missing parameters\n"
