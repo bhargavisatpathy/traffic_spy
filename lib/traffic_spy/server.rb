@@ -1,3 +1,4 @@
+require 'json'
 module TrafficSpy
 
   # Sinatra::Base - Middleware, Libraries, and Modular Apps
@@ -21,15 +22,15 @@ module TrafficSpy
 
       if params["identifier"].nil? || params["rootUrl"].nil?
         status 400
-        body "Missing parameters"
+        body "Missing parameters\n"
       elsif DB.from(:identifiers).select(:identifier).to_a.any?{ |identifier| identifier[:identifier] == params[:identifier] }
         status 403
-        body "Identifier already exists"
+        body "Identifier already exists\n"
       else
         DB.from(:identifiers).insert(:identifier => params["identifier"], :rooturl => params["rootUrl"])
         # => p DB.from(:identifiers).select(:identifier).to_a
         status 200
-        body "Success"
+        body "Success " + {identifier: params["identifier"]}.to_json + "\n"
       end
     end
 
