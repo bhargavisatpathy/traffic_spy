@@ -44,54 +44,77 @@ module TrafficSpy
         body "Application Not Registered"
       else
         payload_hash = JSON.parse(params[:payload])
-        incoming_url = payload_hash["url"]
-        incomng_identifier = params["identifier"]
-        requested_at = payload_hash["requested_at"]
-        responded_in = payload_hash["responded_in"]
+        save_payload(payload_hash)
+        status 200
 
-        incoming_referred_by = payload_hash["referred_by"]
-        referred_by_id = referred_by_table(incoming_referred_by)
-        parameters = payload_hash["parameters"]
-        incoming_event_name = payload_hash["eventName"]
-        event_name_id = event_names_table(incoming_event_name)
-        incoming_user_agent = payload_hash["userAgent"]
-        user_agent_id = user_agents_table(incoming_user_agent)
-        incoming_ip = payload_hash["ip"]
-        ip_id = ip_table(incoming_ip)
-
-        incoming_request_type =payload_hash["request_type"]
-        request_type_id = find_request_type_id(incoming_request_type)
-
-        resolution_width = payload_hash["resolutionWidth"]
-        resolution_height = payload_hash["resolutionHeight"]
-        resolution_id = find_resolution_id(resolution_width, resolution_height)
-
-        puts "Incoming URL: #{incoming_url}"
-
-        if DB.from(:urls).select(:url).to_a.any? {|item| item[:url] == incoming_url }
-          url_id = DB.from(:urls).select(:id).where(:url => incoming_url)
-          puts "We found URL ID"
-        else
-          puts "we didn't find URL ID"
-          DB.from(:urls).insert(:url => incoming_url)
-          url_id = DB.from(:urls).where(:url => incoming_url)
-          # url_id = DB.from("urls").select("id").where("url" => incoming_url)
-        end
+        # incoming_url = payload_hash["url"]
+        # incomng_identifier = params["identifier"]
+        # requested_at = payload_hash["requested_at"]
+        # responded_in = payload_hash["responded_in"]
+        #
+        # incoming_referred_by = payload_hash["referred_by"]
+        # referred_by_id = referred_by_table(incoming_referred_by)
+        # parameters = payload_hash["parameters"]
+        # incoming_event_name = payload_hash["eventName"]
+        # event_name_id = event_names_table(incoming_event_name)
+        # incoming_user_agent = payload_hash["userAgent"]
+        # user_agent_id = user_agents_table(incoming_user_agent)
+        # incoming_ip = payload_hash["ip"]
+        # ip_id = ip_table(incoming_ip)
+        #
+        # incoming_request_type =payload_hash["request_type"]
+        # request_type_id = find_request_type_id(incoming_request_type)
+        #
+        # resolution_width = payload_hash["resolutionWidth"]
+        # resolution_height = payload_hash["resolutionHeight"]
+        # resolution_id = find_resolution_id(resolution_width, resolution_height)
       end
-      puts "url_id #{url_id.to_a[0][:id]}"
-      puts "referred_by_id: #{referred_by_id}"
-      puts "request_type_id: #{request_type_id}"
-      puts "resolution_id: #{resolution_id}"
-      puts "event_name_id: #{event_name_id}"
-      puts "user_agent_id: #{user_agent_id}"
-      puts "ip_id: #{ip_id}"
-      status 200
+
+      # puts "url_id #{url_id.to_a[0][:id]}"
+      # puts "referred_by_id: #{referred_by_id}"
+      # puts "request_type_id: #{request_type_id}"
+      # puts "resolution_id: #{resolution_id}"
+      # puts "event_name_id: #{event_name_id}"
+      # puts "user_agent_id: #{user_agent_id}"
+      # puts "ip_id: #{ip_id}"
+
+
     end
 
     not_found do
       erb :error
     end
 
+    def save_payload(payload_hash)
+      DB.from(:payloads).insert(:url_id => url_id_table(payload_hash["url"]),
+                                :requested_at  => payload_hash["requestedAt"],
+                                :responded_in => payload_hash["respondedIn"],
+                                :request_type_id => find_request_type_id(payload_hash["requestType"]),
+                                :referred_by_id => referred_by_table(payload_hash["referredBy"]),
+                                :parameters => payload_hash["parameters"],
+                                :event_name_id => event_names_table(payload_hash["eventName"]),
+                                :user_agent_id => user_agents_table(payload_hash["userAgent"]),
+                                :resolution_id => find_resolution_id(payload_hash["resolutionWidth"], payload_hash["resolutionHeight"]),
+                                :ip_id => ip_table(payload_hash["ip"]),
+                                :identifier_id => identifier_id_table(params["identifier"]))
+    end
+
+    def identifier_id_table(incoming_identifier)
+      DB.from(:identifiers).select(:id).where(:identifier => incoming_identifier).to_a[0][:id]
+    end
+
+    def url_id_table(incoming_url)
+      if DB.from(:urls).select(:url).to_a.any? {|item| item[:url] == incoming_url }
+        url_id = DB.from(:urls).select(:id).where(:url => incoming_url)
+        puts "We found URL ID"
+      else
+        puts "we didn't find URL ID"
+        DB.from(:urls).insert(:url => incoming_url)
+        url_id = DB.from(:urls).where(:url => incoming_url)
+        # url_id = DB.from("urls").select("id").where("url" => incoming_url)
+      end
+      url_id.to_a[0][:id]
+    end
 
     def referred_by_table(incoming_referred_by)
       if DB.from(:referred_bys).select(:referred_by).to_a.any? {|item| item[:referred_by] == incoming_referred_by }
