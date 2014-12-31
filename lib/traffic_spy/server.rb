@@ -35,11 +35,11 @@ module TrafficSpy
     end
 
     post '/sources/:identifier/data' do
-        puts params[:identifier]
+        # puts params[:identifier]
       if params["payload"].nil? || params["payload"].empty?
         status 400
         body "Missing Payload"
-      elsif !DB.from(:identifiers).select(:identifier).to_a.any?{|identifier| identifier == params[:identifier]}
+      elsif !DB.from(:identifiers).select(:identifier).to_a.any?{|identifier| identifier[:identifier] == params[:identifier]}
         status 403
         body "Application Not Registered"
       else
