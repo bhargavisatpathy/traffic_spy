@@ -17,7 +17,7 @@ Gem::Specification.new do |gem|
   gem.add_dependency "sequel", "3.44.0"
   gem.add_dependency "pg", "0.14.1"
 
-  gem.add_development_dependency "sqlite3", "1.3.5"
+  gem.add_development_dependency "sqlite3", "1.3.10"
 
   gem.files         = `git ls-files`.split($/)
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }

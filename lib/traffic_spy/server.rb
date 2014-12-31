@@ -43,8 +43,26 @@ module TrafficSpy
         status 403
         body "Application Not Registered"
       else
-        status 200
+        payload_hash = JSON.parse(params[:payload])
+        incoming_url = payload_hash["url"]
+        puts "Incoming URL: #{incoming_url}"
+
+        if DB.from(:urls).select(:url).to_a.any? {|item| item[:url] == incoming_url }
+          url_id = DB.from(:urls).select(:id).where(:url => incoming_url)
+          puts "We found it"
+        else
+          puts "we didn't find it"
+          DB.from(:urls).insert(:url => incoming_url)
+          url_id =  DB.from(:urls).where(:url => incoming_url)
+          # url_id = DB.from("urls").select("id").where("url" => incoming_url)
+
+        end
       end
+      puts url_id.to_a[0][:id]
+
+
+        status 200
+
     end
 
     not_found do
