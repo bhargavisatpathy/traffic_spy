@@ -34,6 +34,16 @@ module TrafficSpy
       end
     end
 
+    post '/sources/:identifier/data' do
+        puts params["payload"]
+      if params["payload"].nil? || params["payload"].empty?
+        status 400
+        body "Missing Payload"
+      else
+        status 200
+      end
+    end
+
     not_found do
       erb :error
     end
