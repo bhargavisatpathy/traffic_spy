@@ -50,6 +50,13 @@ module TrafficSpy
         responded_in = payload_hash["responded_in"]
         incoming_referred_by = payload_hash["referred_by"]
         referred_by_id = referred_by_table(incoming_referred_by)
+        parameters = payload_hash["parameters"]
+        incoming_event_name = payload_hash["eventName"]
+        event_name_id = event_names_table(incoming_event_name)
+        incoming_user_agent = payload_hash["userAgent"]
+        user_agent_id = user_agents_table(incoming_user_agent)
+        incoming_ip = payload_hash["ip"]
+        ip_id = ip_table(incoming_ip)
 
         puts "Incoming URL: #{incoming_url}"
 
@@ -65,6 +72,9 @@ module TrafficSpy
       end
       puts "url_id #{url_id.to_a[0][:id]}"
       puts "referred_by_id: #{referred_by_id}"
+      puts "event_name_id: #{event_name_id}"
+      puts "user_agent_id: #{user_agent_id}"
+      puts "ip_id: #{ip_id}"
       status 200
     end
 
@@ -84,6 +94,45 @@ module TrafficSpy
         # url_id = DB.from("urls").select("id").where("url" => incoming_url)
       end
       referred_by_id.to_a[0][:id]
+    end
+
+    def event_names_table(incoming_event_name)
+      if DB.from(:event_names).select(:event_name).to_a.any? {|item| item[:event_name] == incoming_event_name }
+        event_name_id = DB.from(:event_names).select(:id).where(:event_name => incoming_event_name)
+        puts "We found it"
+      else
+        puts "we didn't find it"
+        DB.from(:event_names).insert(:event_name => incoming_event_name)
+        event_name_id = DB.from(:event_names).where(:event_name => incoming_event_name)
+        # url_id = DB.from("urls").select("id").where("url" => incoming_url)
+      end
+      event_name_id.to_a[0][:id]
+    end
+
+    def user_agents_table(incoming_user_agent)
+      if DB.from(:user_agents).select(:user_agent).to_a.any? {|item| item[:user_agent] == incoming_user_agent }
+        user_agent_id = DB.from(:user_agents).select(:id).where(:user_agent => incoming_user_agent)
+        puts "We found it"
+      else
+        puts "we didn't find it"
+        DB.from(:user_agents).insert(:user_agent => incoming_user_agent)
+        user_agent_id = DB.from(:user_agents).where(:user_agent => incoming_user_agent)
+        # url_id = DB.from("urls").select("id").where("url" => incoming_url)
+      end
+      user_agent_id.to_a[0][:id]
+    end
+
+    def ip_table(incoming_ip)
+      if DB.from(:ips).select(:ip).to_a.any? {|item| item[:ip] == incoming_ip }
+        ip_id = DB.from(:ips).select(:id).where(:ip => incoming_ip)
+        puts "We found it"
+      else
+        puts "we didn't find it"
+        DB.from(:ips).insert(:ip => incoming_ip)
+        ip_id = DB.from(:ips).where(:ip => incoming_ip)
+        # url_id = DB.from("urls").select("id").where("url" => incoming_url)
+      end
+      ip_id.to_a[0][:id]
     end
   end
 end
