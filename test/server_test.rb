@@ -54,9 +54,5 @@ module TrafficSpy
       \"resolutionWidth\":\"1920\",\"resolutionHeight\":\"1280\",\"ip\":\"63.29.38.211\"}"
       assert_equal 200, last_response.status
     end
-
-    def test_post_sources_identifier_is_saving_payload
-      
-    end
   end
 end
