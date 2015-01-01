@@ -22,17 +22,19 @@ module TrafficSpy
         return_hash = { status: 400,
                         body:   "Missing parameters\n"
                       }
+        return return_hash
       elsif exists?(incoming_data["identifier"])
         return_hash = { status: 403,
                         body:   "Identifier already exists\n"
                       }
+        return return_hash
       else
         save_identifier(incoming_data)
         return_hash = { status: 200,
                         body: {identifier: incoming_data["identifier"]}.to_json
                       }
+        return return_hash
       end
-     return_hash
     end
   end
 end
