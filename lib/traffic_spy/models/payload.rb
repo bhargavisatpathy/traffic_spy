@@ -22,6 +22,22 @@ module TrafficSpy
         :ip_id           => Ip.ip_table(payload_hash["ip"]),
         :identifier_id   => Identifier.identifier_id_table(identifier))
     end
-  end
 
+    def self.create(incoming_data)
+      if missing_payload?(incoming_data["payload"])
+        return_hash = { status: 400,
+                        body: "Missing Payload"
+                      }
+      elsif !Identifier.exists?(incoming_data["identifier"])
+        return_hash = { status: 403,
+                        body: "Application Not Registered"
+                      }
+      else
+        save_payload(to_hash(incoming_data["payload"]), incoming_data["identifier"])
+        return_hash = { status: 200,
+                        body: ""
+                      }
+      end
+    end
+  end
 end
