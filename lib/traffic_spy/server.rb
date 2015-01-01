@@ -8,8 +8,9 @@ module TrafficSpy
     end
 
     post '/sources' do
-      status Identifier.register(params)[:status]
-      body Identifier.register(params)[:body]
+      status_message = Identifier.register(params)
+      status status_message[:status]
+      body status_message[:body]
     end
 
     post '/sources/:identifier/data' do
