@@ -8,30 +8,14 @@ module TrafficSpy
     end
 
     post '/sources' do
-      if Identifier.missing_identifier?(params)
-        status 400
-        body "Missing parameters\n"
-      elsif Identifier.exists?(params["identifier"])
-        status 403
-        body "Identifier already exists\n"
-      else
-        Identifier.save_identifier(params)
-        status 200
-        body "Success " + {identifier: params["identifier"]}.to_json + "\n"
-      end
+      status Identifier.register(params)[:status]
+      body Identifier.register(params)[:body]
     end
 
     post '/sources/:identifier/data' do
-      if Payload.missing_payload?(params["payload"])
-        status 400
-        body "Missing Payload"
-      elsif !Identifier.exists?(params["identifier"])
-        status 403
-        body "Application Not Registered"
-      else
-        Payload.save_payload(Payload.to_hash(params["payload"]), params["identifier"])
-        status 200
-      end
+      status_message = Payload.create(params)
+      status status_message[:status]
+      body status_message[:body]
     end
 
     not_found do
