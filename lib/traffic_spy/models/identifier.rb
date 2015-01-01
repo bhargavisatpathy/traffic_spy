@@ -31,7 +31,7 @@ module TrafficSpy
       else
         save_identifier(incoming_data)
         return_hash = { status: 200,
-                        body: {identifier: incoming_data["identifier"]}.to_json
+                        body: "Success #{{identifier: incoming_data["identifier"]}.to_json}\n"
                       }
         return return_hash
       end

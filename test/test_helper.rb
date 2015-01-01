@@ -4,5 +4,6 @@ $:.unshift File.expand_path("../../lib", __FILE__)
 require 'traffic_spy'
 
 require 'minitest/autorun'
+require 'minitest/pride'
 require 'rack/test'
 require 'nokogiri'

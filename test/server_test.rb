@@ -1,5 +1,4 @@
 require_relative 'test_helper'
-require 'minitest/pride'
 
 module TrafficSpy
 
@@ -12,6 +11,7 @@ module TrafficSpy
 
     def teardown
       DB[:identifiers].delete
+      DB[:payloads].delete
     end
 
     def test_post_sources_for_missing_parameters
@@ -53,6 +53,20 @@ module TrafficSpy
       \"requestType\":\"GET\",\"parameters\":[],\"eventName\": \"frog\",\"userAgent\":\"Mozilla/5.0\",
       \"resolutionWidth\":\"1920\",\"resolutionHeight\":\"1280\",\"ip\":\"63.29.38.211\"}"
       assert_equal 200, last_response.status
+    end
+
+    def test_post_sources_identifier_does_not_save_a_duplicate_payload
+      post '/sources', 'identifier=jumpstartlab&rootUrl=http://jumpstartlab.com'
+      post '/sources/jumpstartlab/data',
+      "payload={\"url\":\"h\",\"requestedAt\":\"cheese\",\"respondedIn\":37,\"referredBy\":\"fries\",
+      \"requestType\":\"GET\",\"parameters\":[],\"eventName\": \"frog\",\"userAgent\":\"Mozilla/5.0\",
+      \"resolutionWidth\":\"1920\",\"resolutionHeight\":\"1280\",\"ip\":\"63.29.38.211\"}"
+      post '/sources/jumpstartlab/data',
+      "payload={\"url\":\"h\",\"requestedAt\":\"cheese\",\"respondedIn\":37,\"referredBy\":\"fries\",
+      \"requestType\":\"GET\",\"parameters\":[],\"eventName\": \"frog\",\"userAgent\":\"Mozilla/5.0\",
+      \"resolutionWidth\":\"1920\",\"resolutionHeight\":\"1280\",\"ip\":\"63.29.38.211\"}"
+      assert_equal 403, last_response.status
+      assert_equal "Already received request", last_response.body
     end
   end
 end
