@@ -15,7 +15,7 @@ module TrafficSpy
         :responded_in    => payload_hash["respondedIn"],
         :request_type_id => RequestType.find_request_type_id(payload_hash["requestType"]),
         :referred_by_id  => ReferredBy.referred_by_table(payload_hash["referredBy"]),
-        :parameters      => payload_hash["parameters"],
+        :parameters      => payload_hash["parameters"].join(","),
         :event_name_id   => EventName.event_names_table(payload_hash["eventName"]),
         :user_agent_id   => UserAgent.user_agents_table(payload_hash["userAgent"]),
         :resolution_id   => Resolution.find_resolution_id(payload_hash["resolutionWidth"], payload_hash["resolutionHeight"]),
@@ -32,12 +32,39 @@ module TrafficSpy
         return_hash = { status: 403,
                         body: "Application Not Registered"
                       }
+      elsif duplicate_payload?(incoming_data["payload"])
+        puts "DUPLICATE PAYLOAD"
+        return_hash = { status: 403,
+                        body: "Already received request"
+                      }
       else
         save_payload(to_hash(incoming_data["payload"]), incoming_data["identifier"])
         return_hash = { status: 200,
                         body: ""
                       }
       end
+    end
+
+    def self.duplicate_payload?(payload)
+      payload = JSON.parse(payload)
+      return requested_at_exists?(payload["requestedAt"]) &&
+             responded_in_exists?(payload["respondedIn"]) &&
+             parameters_exists?(payload["parameters"])
+    end
+
+    def self.requested_at_exists?(data)
+      DB.from(:payloads).select(:requested_at).to_a
+                        .any? {|item| item[:requested_at] == data}
+    end
+
+    def self.responded_in_exists?(data)
+      DB.from(:payloads).select(:responded_in)
+                        .to_a.any? { |item| item[:responded_in] == data }
+    end
+
+    def self.parameters_exists?(data)
+      DB.from(:payloads).select(:parameters)
+                        .to_a.any? { |item| item[:parameters] == data.join(",") }
     end
   end
 end
