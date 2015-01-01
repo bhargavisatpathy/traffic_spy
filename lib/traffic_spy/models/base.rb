@@ -7,6 +7,8 @@ module TrafficSpy
     DB = Sequel.postgres "traffic_spy"
   end
 
+
+
 end
 
 #
