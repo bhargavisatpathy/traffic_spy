@@ -1,13 +1,17 @@
 module TrafficSpy
   class Resolution
+    def self.table
+      DB.from(:resolutions)
+    end
+
     def self.find_resolution_id(resolution_width, resolution_height)
-      if DB.from(:resolutions).select(:width, :height).to_a.any? {|item| item[:width] == resolution_width && item[:height] == resolution_height}
-        resolution_id = DB.from(:resolutions).select(:id).where(:width => resolution_width).where(:height => resolution_height).to_a[0][:id]
+      if table.select(:width, :height).to_a.any? {|item| item[:width] == resolution_width && item[:height] == resolution_height}
+        resolution_id = table.select(:id).where(:width => resolution_width).where(:height => resolution_height).to_a[0][:id]
         puts "We found resolution"
       else
         puts "we didn't find resolution"
-        DB.from(:resolutions).insert(:width => resolution_width, :height => resolution_height)
-        resolution_id = DB.from(:resolutions).where(:width => resolution_width, :height => resolution_height).to_a[0][:id]
+        table.insert(:width => resolution_width, :height => resolution_height)
+        resolution_id = table.where(:width => resolution_width, :height => resolution_height).to_a[0][:id]
       end
       resolution_id
     end
@@ -24,13 +28,13 @@ module TrafficSpy
         .to_a
         .map {|entry| [entry[:width], entry[:height]] }.uniq
 
-      # resolution = DB.from(:resolutions)
+      # resolution = table
       #                .select(:width, :height)
       #                .where(:id => resolution_id)
       #                .to_a
       #                .map{|entry| [entry[:width], entry[:height]]}
 
-      puts resolution
+      puts resolution.inspect
       resolution
     end
   end

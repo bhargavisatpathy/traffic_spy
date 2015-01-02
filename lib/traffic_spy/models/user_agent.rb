@@ -5,9 +5,13 @@ module TrafficSpy
       DB.from(:user_agents)
     end
 
+    def self.get_id(incoming_user_agent)
+      table.where(:user_agent => incoming_user_agent).to_a[0][:id]
+    end
+
     def self.user_agents_table(incoming_user_agent)
-      if DB.from(:user_agents).select(:user_agent).to_a.any? {|item| item[:user_agent] == incoming_user_agent }
-        user_agent_id = DB.from(:user_agents).select(:id).where(:user_agent => incoming_user_agent).to_a[0][:id]
+      if table.select(:user_agent).to_a.any? {|item| item[:user_agent] == incoming_user_agent }
+        user_agent_id = table.select(:id).where(:user_agent => incoming_user_agent).to_a[0][:id]
         puts "We found user agents"
       else
         puts "we didn't find user agents"
@@ -28,27 +32,6 @@ module TrafficSpy
                 .map { |item| item[:browser] }
                 .uniq
     end
-
-    def self.browser_rank(id)
-      puts browserlist.inspect
-      b_and_id = browserlist.map do |browser|
-        [browser, table.select(:id).where(:browser => browser)]
-        end
-      puts b_and_id.inspect
-      puts id
-      puts Identifier.get_id(id)
-      sel_pay = Payload.by_id(Identifier.get_id(id))
-      puts sel_pay.to_a
-
-      b_and_id = b_and_id.map do |item|
-        [item[0],item[1].to_a]
-      end
-      b_and_id.map do |id|
-        puts id[1].inspect
-      end
-      return nil
-    end
-
 
   end
 end
