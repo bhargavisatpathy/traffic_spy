@@ -11,5 +11,19 @@ module TrafficSpy
       end
       url_id
     end
-  end
+
+    def self.rankurl(identifier)
+      identifier_id = DB.from(:identifiers)
+                        .select(:id)
+                        .where(:identifier => identifier)
+      puts identifier_id.to_a
+      DB.from(:payloads)
+        .where(:identifier_id => identifier_id)
+        .join(:urls, :id => :url_id)
+        .group_and_count(:url)
+        .order(Sequel.desc(:count)).to_a
+        .map { |entry| [entry[:url],entry[:count]] }
+    end
+
+    end
 end

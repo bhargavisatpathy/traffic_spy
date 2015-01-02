@@ -20,16 +20,8 @@ module TrafficSpy
     end
 
     get '/sources/:identifier' do
-      identifier_id = DB.from(:identifiers).select(:id).where(:identifier => params["identifier"]).to_a[0][:id]
-      temp = DB .from(:payloads)
-                .where(:identifier_id => identifier_id)
-                .join(:urls, :id => :url_id)
-                .group_and_count(:url)
-                .order(Sequel.desc(:count)).to_a
-                .map { |entry| [entry[:url],entry[:count]] }
-
-      puts temp.inspect
-      erb :display, locals: {temp: temp}
+      rankurl = Url.rankurl(params[:identifier])
+      erb :display, locals: {rankurl: rankurl}
     end
 
 
