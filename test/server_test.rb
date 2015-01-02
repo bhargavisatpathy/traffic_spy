@@ -4,14 +4,18 @@ module TrafficSpy
 
   class ServerTest < Minitest::Test
     include Rack::Test::Methods
+    include Capybara::DSL
 
     def app
+      Capybara.app = Sinatra::Application.new
       Server
     end
 
     def teardown
       DB[:identifiers].delete
       DB[:payloads].delete
+      DB[:resolutions].delete
+      DB[:urls].delete
     end
 
     def test_post_sources_for_missing_parameters
@@ -56,6 +60,7 @@ module TrafficSpy
     end
 
     def test_post_sources_identifier_does_not_save_a_duplicate_payload
+      skip
       post '/sources', 'identifier=jumpstartlab&rootUrl=http://jumpstartlab.com'
       post '/sources/jumpstartlab/data',
       "payload={\"url\":\"h\",\"requestedAt\":\"cheese\",\"respondedIn\":37,\"referredBy\":\"fries\",
@@ -67,6 +72,19 @@ module TrafficSpy
       \"resolutionWidth\":\"1920\",\"resolutionHeight\":\"1280\",\"ip\":\"63.29.38.211\"}"
       assert_equal 403, last_response.status
       assert_equal "Already received request", last_response.body
+    end
+
+    def test_get_sources_identifier_displays_resolution
+      post '/sources', 'identifier=jumpstartlab&rootUrl=http://jumpstartlab.com'
+      post '/sources/jumpstartlab/data',
+      "payload={\"url\":\"h\",\"requestedAt\":\"cheese\",\"respondedIn\":37,\"referredBy\":\"fries\",
+      \"requestType\":\"GET\",\"parameters\":[],\"eventName\": \"frog\",\"userAgent\":\"Mozilla/5.0\",
+      \"resolutionWidth\":\"1920\",\"resolutionHeight\":\"1280\",\"ip\":\"63.29.38.211\"}"
+      visit '/sources/jumpstartlab'
+      assert_equal 200, last_response.status
+      # within("#resolution_width") do
+      #    assert has_css?("Width: 1920, ")
+      # end
     end
   end
 end

@@ -12,5 +12,9 @@ module TrafficSpy
       DB[:payloads].delete
     end
 
+    def test_save_payload_saves_a_payload
+    
+    end
+
   end
 end
