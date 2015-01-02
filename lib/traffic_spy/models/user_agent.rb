@@ -5,9 +5,13 @@ module TrafficSpy
       DB.from(:user_agents)
     end
 
+    def self.get_id(incoming_user_agent)
+      table.where(:user_agent => incoming_user_agent).to_a[0][:id]
+    end
+
     def self.user_agents_table(incoming_user_agent)
-      if DB.from(:user_agents).select(:user_agent).to_a.any? {|item| item[:user_agent] == incoming_user_agent }
-        user_agent_id = DB.from(:user_agents).select(:id).where(:user_agent => incoming_user_agent).to_a[0][:id]
+      if table.select(:user_agent).to_a.any? {|item| item[:user_agent] == incoming_user_agent }
+        user_agent_id = table.select(:id).where(:user_agent => incoming_user_agent).to_a[0][:id]
         puts "We found user agents"
       else
         puts "we didn't find user agents"
@@ -48,7 +52,5 @@ module TrafficSpy
       end
       return nil
     end
-
-
   end
 end
