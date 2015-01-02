@@ -33,24 +33,5 @@ module TrafficSpy
                 .uniq
     end
 
-    def self.browser_rank(id)
-      puts browserlist.inspect
-      b_and_id = browserlist.map do |browser|
-        [browser, table.select(:id).where(:browser => browser)]
-        end
-      puts b_and_id.inspect
-      puts id
-      puts Identifier.get_id(id)
-      sel_pay = Payload.by_id(Identifier.get_id(id))
-      puts sel_pay.to_a
-
-      b_and_id = b_and_id.map do |item|
-        [item[0],item[1].to_a]
-      end
-      b_and_id.map do |id|
-        puts id[1].inspect
-      end
-      return nil
-    end
   end
 end
