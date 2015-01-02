@@ -26,6 +26,10 @@ module TrafficSpy
       erb :display, locals: {rankurl: rankurl, resolution: resolution}
     end
 
+    get '/test/:identifier' do
+      UserAgent.browser_rank(params[:identifier])
+    end
+
     not_found do
       erb :error
     end
