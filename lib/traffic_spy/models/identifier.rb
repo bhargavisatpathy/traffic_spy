@@ -1,5 +1,14 @@
 module TrafficSpy
   class Identifier
+
+    def self.table
+      DB.from(:identifiers)
+    end
+
+    def self.get_id(identifier)
+      table.select(:id).where(:identifier => identifier).to_a[0][:id]
+    end
+
     def self.save_identifier(incoming_data)
       DB.from(:identifiers).insert(:identifier => incoming_data["identifier"],
                                    :rooturl => incoming_data["rootUrl"])
