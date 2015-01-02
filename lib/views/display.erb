@@ -8,3 +8,11 @@
   <span id = "count"><%= item[1] %></span>
   </br>
 <% end %>
+
+<h2>Resolutions</h2>
+
+<% resolution.each do |item| %>
+  <span id = "resolution_width"><%= "Width: #{item[0]}, " %></span>
+  <span id = "resolution_height"><%= "Height: #{item[1]}" %></span>
+  </br>
+<% end %>

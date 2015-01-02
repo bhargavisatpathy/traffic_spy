@@ -21,9 +21,10 @@ module TrafficSpy
 
     get '/sources/:identifier' do
       rankurl = Url.rankurl(params[:identifier])
-      erb :display, locals: {rankurl: rankurl}
-    end
 
+      resolution = Resolution.display_resolution(params[:identifier])
+      erb :display, locals: {rankurl: rankurl, resolution: resolution}
+    end
 
     not_found do
       erb :error
