@@ -4,4 +4,3 @@ Sequel.migration do
     add_column :user_agents, :os, String
   end
 end
-

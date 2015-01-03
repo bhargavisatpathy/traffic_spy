@@ -4,10 +4,10 @@ module TrafficSpy
 
   class ServerTest < Minitest::Test
     include Rack::Test::Methods
-    include Capybara::DSL
+    # include Capybara::DSL
 
     def app
-      Capybara.app = Sinatra::Application.new
+      # Capybara.app = Sinatra::Application.new
       Server
     end
 
@@ -16,6 +16,7 @@ module TrafficSpy
       DB[:payloads].delete
       DB[:resolutions].delete
       DB[:urls].delete
+      DB[:event_names].delete
     end
 
     def test_post_sources_for_missing_parameters
@@ -80,11 +81,33 @@ module TrafficSpy
       "payload={\"url\":\"h\",\"requestedAt\":\"cheese\",\"respondedIn\":37,\"referredBy\":\"fries\",
       \"requestType\":\"GET\",\"parameters\":[],\"eventName\": \"frog\",\"userAgent\":\"Mozilla/5.0\",
       \"resolutionWidth\":\"1920\",\"resolutionHeight\":\"1280\",\"ip\":\"63.29.38.211\"}"
-      visit '/sources/jumpstartlab'
+      get '/sources/jumpstartlab'
       assert_equal 200, last_response.status
       # within("#resolution_width") do
       #    assert has_css?("Width: 1920, ")
       # end
+    end
+
+    def test_get_sources_identifier_events_displays_events_index
+      post '/sources', 'identifier=jumpstartlab&rootUrl=http://jumpstartlab.com'
+      post '/sources/jumpstartlab/data',
+      "payload={\"url\":\"h\",\"requestedAt\":\"cheese\",\"respondedIn\":37,\"referredBy\":\"fries\",
+      \"requestType\":\"GET\",\"parameters\":[],\"eventName\": \"frog\",\"userAgent\":\"Mozilla/5.0\",
+      \"resolutionWidth\":\"1920\",\"resolutionHeight\":\"1280\",\"ip\":\"63.29.38.211\"}"
+      get '/sources/jumpstartlab/events'
+      assert_equal 200, last_response.status
+    end
+
+    def test_get_sources_identifier_events_does_not_display_events
+      skip
+      post '/sources', 'identifier=jumpstartlab&rootUrl=http://jumpstartlab.com'
+      post '/sources/jumpstartlab/data',
+      "payload={\"url\":\"h\",\"requestedAt\":\"cheese\",\"respondedIn\":37,\"referredBy\":\"fries\",
+      \"requestType\":\"GET\",\"parameters\":[],\"eventName\": \"" "\",\"userAgent\":\"Mozilla/5.0\",
+      \"resolutionWidth\":\"1920\",\"resolutionHeight\":\"1280\",\"ip\":\"63.29.38.211\"}"
+      get '/sources/jumpstartlab/events'
+      assert_equal 200, last_response.status
+      assert_equal "No events defined", last_response.body
     end
   end
 end
