@@ -44,25 +44,11 @@ module TrafficSpy
       DB.fetch("select url, avg(responded_in) from payloads pl join urls u on pl.url_id = u.id where pl.identifier_id = #{identifier[:id]} group by u.url order by avg desc")
     end
 
-    def self.longest_response_time(identifier, url)
+    def longest_response_time(identifier, url)
       DB.from(:payloads)
         .where(:identifier_id => identifier[:id], :url => url)
         .join(:urls, :id => :url_id)
         .max(:responded_in)
-    end
-
-    def self.shortest_response_time(identifier, url)
-      DB.from(:payloads)
-        .where(:identifier_id => identifier[:id], :url => url)
-        .join(:urls, :id => :url_id)
-        .min(:responded_in)
-    end
-    
-    def self.average_response_time(identifier, url)
-      DB.from(:payloads)
-        .where(:identifier_id => identifier[:id], :url => url)
-        .join(:urls, :id => :url_id)
-        .avg(:responded_in)
     end
   end
 end
