@@ -34,6 +34,12 @@ module TrafficSpy
       UserAgent.browser_rank(id)
     end
 
+    get '/sources/:identifier/events' do
+      identifier = params[:identifier]
+      events_list = EventName.display_events(identifier)
+      erb :events, locals: {events_list: events_list, identifier: identifier}
+    end
+
     not_found do
       erb :error
     end

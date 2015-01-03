@@ -24,5 +24,17 @@ module TrafficSpy
       end
       event_name_id
     end
+
+    def self.display_events(identifier)
+      identifier_id = Identifier.get_id(identifier)
+      event_names = Payload.by_id(identifier_id)
+                           .join(:event_names, :id => :event_name_id)
+                           .group_and_count(:event_name)
+                           .order(Sequel.desc(:count))
+                           .to_a
+                           .map{|entry| [entry[:event_name], entry[:count]]}
+      puts event_names.inspect
+      event_names
+    end
   end
 end
