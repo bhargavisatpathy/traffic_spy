@@ -6,11 +6,11 @@ module TrafficSpy
     end
 
     def self.find(identifier)
-      table.select(:id).where(:identifier => identifier).first
+      table.where(:identifier => identifier).first
     end
 
     def self.exists?(identifier)
-      !table.select(:id).where(:identifier => identifier).empty?
+      !table.where(:identifier => identifier).empty?
     end
 
     def self.save_identifier(incoming_data)

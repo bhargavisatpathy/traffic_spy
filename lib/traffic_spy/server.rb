@@ -26,15 +26,23 @@ module TrafficSpy
       @rank_os           = Agent.rank_os(identifier)
       @resolution        = Resolution.display_resolution(identifier)
       @avg_response_time = Url.rank_url_by_reponse_time(identifier)
-      erb :display
+      erb :identifier_display
     end
 
     get '/sources/:identifier/urls/:relative_path' do
       identifier = Identifier.find(params[:identifier])
-
-      #if Url.exists?(identifier, relative_path)
-
-      #end
+      puts identifier[:rooturl]
+      @url = identifier[:rooturl] +"/"+ params[:relative_path]
+      puts params[:relative_path]
+      if Url.exists?(@url)
+        @longest_response_time = Url.longest_response_time(identifier, @url)
+        @shortest_response_time = Url.shortest_response_time(identifier, @url)
+        @average_response_time = Url.average_response_time(identifier, @url)
+        erb :url_display
+      else
+        @message = "The url #{@url} has never been requested"
+        erb :error
+      end
     end
 
     get '/test/:identifier' do

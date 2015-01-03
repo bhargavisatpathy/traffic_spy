@@ -1,4 +1,4 @@
-<h1>Display Information</h1>
+<h1>Application Details</h1>
 
 <h2>URLs By Rank</h2>
 <% @rank_url.each do |row| %>
@@ -30,6 +30,6 @@
 <h2>Average Response Time</h2>
 <% @avg_response_time.each do |row| %>
   <span id = "url"><%= row[:url] %></span>
-  <span id = "avg_response_time"><%= row[:avg] %></span>
+  <span id = "avg_response_time"><%= row[:avg].to_f %></span>
   </br>
 <% end %>
