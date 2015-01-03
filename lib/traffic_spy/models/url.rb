@@ -33,5 +33,5 @@ module TrafficSpy
         .map { |entry| [entry[:url],entry[:count]] }
     end
 
-    end
+  end
 end
