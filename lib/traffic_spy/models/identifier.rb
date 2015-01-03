@@ -5,8 +5,12 @@ module TrafficSpy
       DB.from(:identifiers)
     end
 
-    def self.get_id(identifier)
-      table.select(:id).where(:identifier => identifier).to_a[0][:id]
+    def self.find(identifier)
+      table.select(:id).where(:identifier => identifier).first
+    end
+
+    def self.exists?(identifier)
+      !table.select(:id).where(:identifier => identifier).empty?
     end
 
     def self.save_identifier(incoming_data)
@@ -14,17 +18,14 @@ module TrafficSpy
                                    :rooturl => incoming_data["rootUrl"])
     end
 
-    def self.exists?(identifier)
-      table.select(:identifier).to_a.any? { |item| item[:identifier] == identifier}
-    end
+    # def self.exists?(identifier)
+    #   table.select(:identifier).to_a.any? { |item| item[:identifier] == identifier}
+    # end
 
     def self.missing_identifier?(incoming_data)
       incoming_data["identifier"].nil? || incoming_data["rootUrl"].nil?
     end
 
-    # def self.identifier_id_table(incoming_identifier)
-    #   table.select(:id).where(:identifier => incoming_identifier).to_a[0][:id]
-    # end
 
     def self.register(incoming_data)
       if missing_identifier?(incoming_data)

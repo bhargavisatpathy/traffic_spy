@@ -20,23 +20,31 @@ module TrafficSpy
     end
 
     get '/sources/:identifier' do
-      id                 = Identifier.get_id(params[:identifier])
-      @rank_url          = Url.rank_url(id)
-      @rank_browser      = Agent.rank_browser(id)
-      @rank_os           = Agent.rank_os(id)
-      @resolution        = Resolution.display_resolution(id)
-      @avg_response_time = Url.rank_url_by_reponse_time(id)
+      identifier         = Identifier.find(params[:identifier])
+      @rank_url          = Url.rank_url(identifier)
+      @rank_browser      = Agent.rank_browser(identifier)
+      @rank_os           = Agent.rank_os(identifier)
+      @resolution        = Resolution.display_resolution(identifier)
+      @avg_response_time = Url.rank_url_by_reponse_time(identifier)
       erb :display
     end
 
+    get '/sources/:identifier/urls/:relative_path' do
+      identifier = Identifier.find(params[:identifier])
+
+      #if Url.exists?(identifier, relative_path)
+
+      #end
+    end
+
     get '/test/:identifier' do
-      id = Identifier.get_id(params[:identifier])
-      UserAgent.browser_rank(id)
+      identifier = Identifier.find(params[:identifier])
+      UserAgent.browser_rank(identifier)
     end
 
     get '/sources/:identifier/events' do
       identifier = params[:identifier]
-      events_list = EventName.display_events(identifier)
+      events_list = EventName.display_events(Identifier.find(params[:identifier]))
       erb :events, locals: {events_list: events_list, identifier: identifier}
     end
 
