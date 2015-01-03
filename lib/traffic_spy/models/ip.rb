@@ -5,20 +5,23 @@ module TrafficSpy
       DB.from(:ips)
     end
 
-    def self.get_id(incoming_ip)
-      table.where(:ip => incoming_up).to_a[0][:id]
+    def self.find(incoming_ip)
+      table.where(:ip => incoming_ip).first
+    end
+    def self.exists?(incoming_ip)
+      !table.where(:ip => incoming_ip).empty?
     end
 
-    def self.ip_table(incoming_ip)
-      if table.select(:ip).to_a.any? {|item| item[:ip] == incoming_ip }
+    def self.find_or_create(incoming_ip)
+      if exists?(incoming_ip)
         ip_id = table .select(:id)
                       .where(:ip => incoming_ip)
-                      .to_a[0][:id]
+                      .first[:id]
         puts "We found ip"
       else
         puts "we didn't find ip"
         table.insert(:ip => incoming_ip)
-        ip_id = table.where(:ip => incoming_ip).to_a[0][:id]
+        ip_id = table.where(:ip => incoming_ip).first[:id]
       end
       ip_id
     end

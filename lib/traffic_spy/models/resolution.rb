@@ -4,26 +4,30 @@ module TrafficSpy
       DB.from(:resolutions)
     end
 
-    def self.find_resolution_id(resolution_width, resolution_height)
-      if table.select(:width, :height)
-              .to_a.any? {|item| item[:width] == resolution_width \
-                              && item[:height] == resolution_height}
+    def self.exists?(resolution_width, resolution_height)
+      !table.select(1)
+      .where(:width => resolution_width, :height => resolution_height)
+      .empty?
+    end
+
+    def self.find_or_create(resolution_width, resolution_height)
+      if self.exists?(resolution_width, resolution_height)
         resolution_id = table.select(:id).where(:width => resolution_width)
-                             .where(:height => resolution_height).to_a[0][:id]
+                             .where(:height => resolution_height).first[:id]
         puts "We found resolution"
       else
         puts "we didn't find resolution"
         table.insert(:width => resolution_width, :height => resolution_height)
         resolution_id = table.where(:width => resolution_width,
-                                    :height => resolution_height).to_a[0][:id]
+                                    :height => resolution_height).first[:id]
       end
       resolution_id
     end
 
-    def self.display_resolution(identifier_id)
+    def self.display_resolution(identifier)
       resolution = DB.from(:payloads)
                      .select(:resolution_id)
-                     .where(:identifier_id => identifier_id)
+                     .where(:identifier_id => identifier[:id])
                      .join(:resolutions, :id => :resolution_id)
                      .select(:width, :height).to_a
                      .map {|entry| [entry[:width], entry[:height]] }.uniq
