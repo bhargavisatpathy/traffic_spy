@@ -20,11 +20,12 @@ module TrafficSpy
     end
 
     get '/sources/:identifier' do
-      id = Identifier.get_id(params[:identifier])
-      @rank_url = Url.rank_url(id)
-      @rank_browser = Agent.rank_browser(id)
-      @rank_os = Agent.rank_os(id)
-      @resolution = Resolution.display_resolution(id)
+      id                 = Identifier.get_id(params[:identifier])
+      @rank_url          = Url.rank_url(id)
+      @rank_browser      = Agent.rank_browser(id)
+      @rank_os           = Agent.rank_os(id)
+      @resolution        = Resolution.display_resolution(id)
+      @avg_response_time = Url.rank_url_by_reponse_time(id)
       erb :display
     end
 

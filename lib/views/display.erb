@@ -1,8 +1,6 @@
 <h1>Display Information</h1>
 
 <h2>URLs By Rank</h2>
-
-
 <% @rank_url.each do |row| %>
   <span id = "url"><%= row[:url] %></span>
   <span id = "url_count"><%= row[:count] %></span>
@@ -10,24 +8,28 @@
 <% end %>
 
 <h2>Browser Breakdown</h2>
-
 <% @rank_browser.each do |row| %>
-<span id = "browser"><%= row[:browser] %></span>
-<span id = "browser_count"><%= row[:count] %></span>
-</br>
+  <span id = "browser"><%= row[:browser] %></span>
+  <span id = "browser_count"><%= row[:count] %></span>
+  </br>
 <% end %>
 
-<h2>Operating System Breakdown</h2>
+<h2>OS Breakdown</h2>
 <% @rank_os.each do |row| %>
-<span id = "os"><%= row[:os] %></span>
-<span id = "os_count"><%= row[:count] %></span>
-</br>
+  <span id = "os"><%= row[:os] %></span>
+  <span id = "os_count"><%= row[:count] %></span>
+  </br>
 <% end %>
 
 <h2>Resolutions</h2>
-
 <% @resolution.each do |row| %>
-  <span id = "resolution_width"><%= "Width: #{row[0]}, " %></span>
-  <span id = "resolution_height"><%= "Height: #{row[1]}" %></span>
+  <span id = "resolution"><%= "#{row[0]} X #{row[1]}" %></span>
+  </br>
+<% end %>
+
+<h2>Average Response Time</h2>
+<% @avg_response_time.each do |row| %>
+  <span id = "url"><%= row[:url] %></span>
+  <span id = "avg_response_time"><%= row[:avg] %></span>
   </br>
 <% end %>

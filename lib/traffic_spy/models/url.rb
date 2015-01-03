@@ -29,5 +29,15 @@ module TrafficSpy
         .order(Sequel.desc(:count)).to_a
     end
 
+    def self.rank_url_by_reponse_time(identifier_id)
+      # DB.from(:payloads)
+      #   .select(:url, avg(:responded_in))
+      #   .where(:identifier_id => identifier_id)
+      #   .join(:urls, :id => :url_id)
+      #   .group_by(:url)
+      #   .to_a
+        # .order(Sequel.desc(:avg)).to_a
+      DB.fetch("select url, avg(responded_in) from payloads pl join urls u on pl.url_id = u.id group by u.url order by avg desc")
+    end
   end
 end

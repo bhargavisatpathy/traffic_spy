@@ -76,5 +76,7 @@ module TrafficSpy
       table.select(:parameters)
            .to_a.any? { |item| item[:parameters] == data.join(",") }
     end
+
+    
   end
 end
