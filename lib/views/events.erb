@@ -1,9 +1,9 @@
 <h1>Events Index</h1>
 
-<h2>Events</h2>
+<h2>Events For <%="#{identifier.capitalize}"%></h2>
 <% if events_list.empty? %>
   <p>
-    No Events Defined
+    There are no events defined for <%="#{identifier.capitalize}"%>
   </p>
 <% else %>
   <% events_list.each do |row| %>

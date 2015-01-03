@@ -36,5 +36,18 @@ module TrafficSpy
       puts event_names.inspect
       event_names
     end
+
+    def self.event_details(identifier, event_name)
+      identifier_id = Identifier.get_id(identifier)
+      event_details = Payload.by_id(identifier_id)
+                             .join(:event_names, :id => :event_name_id)
+                             .select(:event_name, :requested_at)
+                             .where(:event_name => event_name)
+                             .group_and_count(:requested_at)
+                             .to_a
+                             .map{|entry| [entry[:requested_at], entry[:count]]}
+      puts event_details
+      event_details
+    end
   end
 end

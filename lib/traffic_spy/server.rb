@@ -40,6 +40,13 @@ module TrafficSpy
       erb :events, locals: {events_list: events_list, identifier: identifier}
     end
 
+    get '/sources/:identifier/events/:event_name' do
+      identifier = params[:identifier]
+      event_name = params[:event_name]
+      event_details = EventName.event_details(identifier, event_name)
+      erb :event_details, locals: {event_details: event_details, identifier: identifier, event_name: event_name}
+    end
+
     not_found do
       erb :error
     end

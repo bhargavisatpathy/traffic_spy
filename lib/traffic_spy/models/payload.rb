@@ -20,7 +20,7 @@ module TrafficSpy
     def self.save_payload(payload_hash, identifier)
       table.insert(
         :url_id          => Url.url_id_table(payload_hash["url"]),
-        :requested_at    => payload_hash["requestedAt"],
+        :requested_at    => Time.parse(payload_hash["requestedAt"]),
         :responded_in    => payload_hash["respondedIn"],
         :request_type_id => RequestType.find_request_type_id(payload_hash["requestType"]),
         :referred_by_id  => ReferredBy.referred_by_table(payload_hash["referredBy"]),
@@ -77,6 +77,6 @@ module TrafficSpy
            .to_a.any? { |item| item[:parameters] == data.join(",") }
     end
 
-    
+
   end
 end
