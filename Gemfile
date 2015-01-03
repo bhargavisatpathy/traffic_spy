@@ -2,6 +2,7 @@ source 'https://rubygems.org'
 
 # Specify your gem's dependencies in traffic_spy.gemspec
 gemspec
+  gem 'useragent'
 
 group :development do
   gem 'shotgun'

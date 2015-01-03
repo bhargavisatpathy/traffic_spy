@@ -1,5 +1,5 @@
 module TrafficSpy
-  class UserAgent
+  class Agent
 
     def self.table
       DB.from(:user_agents)
@@ -18,9 +18,12 @@ module TrafficSpy
         puts "We found user agents"
       else
         puts "we didn't find user agents"
-        browser = incoming_user_agent.split(' ')[0]
+        user_agent = UserAgent.parse(incoming_user_agent)
+        browser = user_agent.browser
+        # browser = incoming_user_agent.split('/')[0]
         puts browser
-        os = incoming_user_agent.split(' ')[1][1..-2]
+        os = user_agent.platform
+        # os = incoming_user_agent.split(' ')[1][1..-2]
         puts os
         table.insert(:user_agent => incoming_user_agent,
                      :browser => browser,
@@ -32,9 +35,22 @@ module TrafficSpy
       user_agent_id
     end
 
-    def self.browserlist
-      table.select(:browser).to_a
-           .map { |item| item[:browser] }.uniq
+    def self.rank_browser(identifier_id)
+      DB.from(:payloads)
+        .select(:browser, :count)
+        .where(:identifier_id => identifier_id)
+        .join(:user_agents, :id => :user_agent_id)
+        .group_and_count(:browser)
+        .order(Sequel.desc(:count)).to_a
+    end
+
+    def self.rank_os(identifier_id)
+      DB.from(:payloads)
+        .select(:os, :count)
+        .where(:identifier_id => identifier_id)
+        .join(:user_agents, :id => :user_agent_id)
+        .group_and_count(:os)
+        .order(Sequel.desc(:count)).to_a
     end
 
   end

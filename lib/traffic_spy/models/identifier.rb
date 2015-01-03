@@ -22,9 +22,9 @@ module TrafficSpy
       incoming_data["identifier"].nil? || incoming_data["rootUrl"].nil?
     end
 
-    def self.identifier_id_table(incoming_identifier)
-      table.select(:id).where(:identifier => incoming_identifier).to_a[0][:id]
-    end
+    # def self.identifier_id_table(incoming_identifier)
+    #   table.select(:id).where(:identifier => incoming_identifier).to_a[0][:id]
+    # end
 
     def self.register(incoming_data)
       if missing_identifier?(incoming_data)

@@ -20,14 +20,17 @@ module TrafficSpy
     end
 
     get '/sources/:identifier' do
-      rankurl = Url.rankurl(params[:identifier])
-
-      resolution = Resolution.display_resolution(params[:identifier])
-      erb :display, locals: {rankurl: rankurl, resolution: resolution}
+      id = Identifier.get_id(params[:identifier])
+      @rank_url = Url.rank_url(id)
+      @rank_browser = Agent.rank_browser(id)
+      @rank_os = Agent.rank_os(id)
+      @resolution = Resolution.display_resolution(id)
+      erb :display
     end
 
     get '/test/:identifier' do
-      UserAgent.browser_rank(params[:identifier])
+      id = Identifier.get_id(params[:identifier])
+      UserAgent.browser_rank(id)
     end
 
     not_found do

@@ -26,11 +26,11 @@ module TrafficSpy
         :referred_by_id  => ReferredBy.referred_by_table(payload_hash["referredBy"]),
         :parameters      => payload_hash["parameters"].join(","),
         :event_name_id   => EventName.event_names_table(payload_hash["eventName"]),
-        :user_agent_id   => UserAgent.user_agents_table(payload_hash["userAgent"]),
+        :user_agent_id   => Agent.user_agents_table(payload_hash["userAgent"]),
         :resolution_id   => Resolution.find_resolution_id(payload_hash["resolutionWidth"],
                                                           payload_hash["resolutionHeight"]),
         :ip_id           => Ip.ip_table(payload_hash["ip"]),
-        :identifier_id   => Identifier.identifier_id_table(identifier))
+        :identifier_id   => Identifier.get_id(identifier))
     end
 
     def self.create(incoming_data)
