@@ -10,7 +10,8 @@ module TrafficSpy
     end
 
     def self.event_names_table(incoming_event_name)
-      if table.select(:event_name).to_a.any? {|item| item[:event_name] == incoming_event_name }
+      if table.select(:event_name)
+              .to_a.any? {|item| item[:event_name] == incoming_event_name }
         event_name_id = table .select(:id)
                               .where(:event_name => incoming_event_name)
                               .to_a[0][:id]
