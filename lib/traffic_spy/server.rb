@@ -31,15 +31,14 @@ module TrafficSpy
 
     get '/sources/:identifier/urls/:relative_path' do
       identifier = Identifier.find(params[:identifier])
-      puts identifier[:rooturl]
       @url = identifier[:rooturl] +"/"+ params[:relative_path]
-      puts params[:relative_path]
       if Url.exists?(@url)
         @longest_response_time = Url.longest_response_time(identifier, @url)
         @shortest_response_time = Url.shortest_response_time(identifier, @url)
         @average_response_time = Url.average_response_time(identifier, @url)
         @http_verbs = Url.http_verbs(identifier, @url)
         @popular_referrers = Url.popular_referrers(identifier, @url)
+        @popular_user_agents = Url.popular_user_agents(identifier, @url)
         erb :url_display
       else
         @message = "The url #{@url} has never been requested"

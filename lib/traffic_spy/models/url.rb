@@ -90,5 +90,19 @@ module TrafficSpy
         .join(referrer_ids, :referred_by_id => :id)
         .map { |row| row[:referred_by] }
     end
+
+    def self.popular_user_agents(identifier, url)
+      user_agent_ids = DB.from(:payloads)
+                         .select(:user_agent_id)
+                         .where(:identifier_id => identifier[:id], :url => url)
+                         .join(:urls, :id => :url_id)
+
+      DB.from(:user_agents)
+        .select(:browser, :os, :count)
+        .join(user_agent_ids, :user_agent_id => :id)
+        .group_and_count(:browser, :os)
+        .order(Sequel.desc(:count))
+        .to_a
+    end
   end
 end
