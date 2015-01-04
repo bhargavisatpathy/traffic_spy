@@ -61,9 +61,9 @@ module TrafficSpy
 
     get '/sources/:identifier/events' do
       protected!
-      identifier = params[:identifier]
-      events_list = EventName.display_events(Identifier.find(params[:identifier]))
-      erb :events, locals: {events_list: events_list, identifier: identifier}
+      @identifier = params[:identifier]
+      @events_list = EventName.display_events(Identifier.find(params[:identifier]))
+      erb :events
     end
 
     get '/sources/:identifier/events/:event_name' do
