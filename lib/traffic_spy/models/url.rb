@@ -57,12 +57,25 @@ module TrafficSpy
         .join(:urls, :id => :url_id)
         .min(:responded_in)
     end
-    
+
     def self.average_response_time(identifier, url)
       DB.from(:payloads)
         .where(:identifier_id => identifier[:id], :url => url)
         .join(:urls, :id => :url_id)
         .avg(:responded_in)
+    end
+
+    def self.http_verbs(identifier, url)
+      request_type_ids = DB.from(:payloads)
+        .select_group(:request_type_id)
+        .where(:identifier_id => identifier[:id])
+        .join(:urls, :id => :url_id)
+        .where(:url => url)
+
+      DB.from(:request_types)
+        .select(:request_type)
+        .where(:id => request_type_ids).to_a
+        .map { |row| row[:request_type] }
     end
   end
 end
