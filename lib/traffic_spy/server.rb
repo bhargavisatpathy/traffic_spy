@@ -20,6 +20,7 @@ module TrafficSpy
     end
 
     get '/sources/:identifier' do
+      protected!
       if Identifier.exists?(params[:identifier])
         @identifier        = Identifier.find(params[:identifier])
         @rank_url          = Url.rank_url(@identifier)
@@ -35,6 +36,7 @@ module TrafficSpy
     end
 
     get '/sources/:identifier/urls/:relative_path' do
+      protected!
       identifier = Identifier.find(params[:identifier])
       @url = identifier[:rooturl] +"/"+ params[:relative_path]
       if Url.exists?(@url)
@@ -51,18 +53,15 @@ module TrafficSpy
       end
     end
 
-    get '/test/:identifier' do
-      identifier = Identifier.find(params[:identifier])
-      UserAgent.browser_rank(identifier)
-    end
-
     get '/sources/:identifier/events' do
+      protected!
       identifier = params[:identifier]
       events_list = EventName.display_events(Identifier.find(params[:identifier]))
       erb :events, locals: {events_list: events_list, identifier: identifier}
     end
 
     get '/sources/:identifier/events/:event_name' do
+      protected!
       identifier = params[:identifier]
       event_name = params[:event_name]
       event_details = EventName.event_details(Identifier.find(params[:identifier]), event_name)
@@ -73,6 +72,18 @@ module TrafficSpy
                                    events_by_hour: events_by_hour,
                                    total_count:    total_count
                                    }
+    end
+
+    def protected!
+      return if authorized?
+      headers['WWW-Authenticate'] = 'Basic realm="Restricted Area"'
+      halt 401, "Not authorized\n"
+    end
+
+    def authorized?
+      @auth ||= Rack::Auth::Basic::Request.new(request.env)
+      @auth.provided? && @auth.basic? &&
+      @auth.credentials && @auth.credentials == ['admin', 'admin']
     end
 
     not_found do
