@@ -1,10 +1,10 @@
-<h2>Average Response Time</h2>
+<h3>Average Response Time</h3>
 <% @avg_response_time.each do |row| %>
-  <span id = "url">
+  <div id = "url">
     <a href=<%= "/sources/#{@identifier[:identifier]}/urls#{row[:relative_path]}" %>>
       <%= row[:url] %>
     </a>
-  </span>
-  <span id = "avg_response_time"><%= row[:avg].to_f %>ms</span>
+  </div>
+  <div id = "avg_response_time"><%= row[:avg].to_f %>ms</div>
   </br>
 <% end %>

@@ -1,0 +1,25 @@
+<% if @events_by_hour.empty? %>
+  <span id = "no_event">
+    No Event for <%= "#{@event_name}" %> has been defined.
+  </span>
+  <span id = "events_index">
+    <a href="/sources/<%=@identifier%>/events"><%="Events Index"%></a>
+  </span>
+  </br>
+<% else %>
+  <p>
+    <%="Event was recieved #{@total_count} times."%>
+  </p>
+
+  <div id="hour_by_hour">
+    <% @events_by_hour.group_by {|item| item[0]}.each do |key, value| %>
+      <div  id = "hour_recieved">
+        <%=key%>
+      </div>
+      <div id = "times_received">
+        <%=value.count%>
+      </div>
+    </br>
+    <%end%>
+  </div>
+<% end %>
