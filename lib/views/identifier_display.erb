@@ -30,6 +30,6 @@
 <h2>Average Response Time</h2>
 <% @avg_response_time.each do |row| %>
   <span id = "url"><%= row[:url] %></span>
-  <span id = "avg_response_time"><%= row[:avg].to_f %></span>
+  <span id = "avg_response_time"><%= row[:avg].to_f %>ms</span>
   </br>
 <% end %>

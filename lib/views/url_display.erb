@@ -6,15 +6,24 @@
   Longest Response Time: <%= @longest_response_time %>ms
 </span>
 </br>
+
 <span id = "shortest_response_time">
   Shortest Response Time: <%= @shortest_response_time %>ms
 </span>
 </br>
+
 <span id = "average_response_time">
   Average Response Time: <%= @average_response_time.to_f %>ms
 </span>
 </br>
+
 <span id = "http_verbs_used">
   Http Verbs Used: <%= @http_verbs.join(', ') %>
+</span>
+</br>
+
+<h3> Most Popular Referrers: </h3>
+<span id = "most_popular_referrers">
+  <%= @popular_referrers.join('\n')%>
 </span>
 </br>
