@@ -19,8 +19,9 @@ module TrafficSpy
       body status_message[:body]
     end
 
-    get '/sources/:identifier' do
+    get '/sources/:identifier.?:format?' do
       protected!
+      clean_param! :identifier
       if Identifier.exists?(params[:identifier])
         @identifier        = Identifier.find(params[:identifier])
         @rank_url          = Url.rank_url(@identifier)
@@ -28,7 +29,11 @@ module TrafficSpy
         @rank_os           = Agent.rank_os(@identifier)
         @resolution        = Resolution.display_resolution(@identifier)
         @avg_response_time = Url.rank_url_by_reponse_time(@identifier)
-        erb :identifier_display
+        if params[:format] == :json
+          identifier_display_json
+        else
+          erb :identifier_display
+        end
       else
         @message = "The identifier #{params[:identifier]} has not been registered"
         erb :error
@@ -88,6 +93,27 @@ module TrafficSpy
 
     not_found do
       erb :error
+    end
+
+    private
+
+    def identifier_display_json
+      content_type :json
+      {
+        identifier: @identifier,
+        rank_url: @rank_url,
+        rank_browser: @rank_browser,
+        rank_os: @rank_os,
+        resolution: @resolution,
+        avg_response_time: @avg_response_time
+      }.to_json
+    end
+
+    def clean_param!(param_name)
+      if params[param_name].end_with? '.json'
+        params[param_name] = params[param_name].slice(0..-6)
+        params[:format] = :json
+      end
     end
   end
 end
