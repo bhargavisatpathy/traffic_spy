@@ -4,5 +4,19 @@
   Event details for <%="#{event_name.capitalize}"%>
 </h2>
 
-<%=event_details.each do |item| %>
-  <%=
+<p>
+  <%="Event was recieved #{total_count} times"%>
+</p>
+
+
+<div id="hour_by_hour">
+  <% events_by_hour.each do |item| %>
+    <span id = "hour_recieved">
+      <%="#{item[0]}"%>
+    </span>
+    <span id = "times_received">
+      <%=item[1]%>
+    </span>
+  </br>
+  <%end%>
+</div>

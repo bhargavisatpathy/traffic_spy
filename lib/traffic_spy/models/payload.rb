@@ -19,18 +19,19 @@ module TrafficSpy
 
     def self.save_payload(payload_hash, identifier)
       table.insert(
-        :url_id          => Url.url_id_table(payload_hash["url"]),
+        :url_id          => Url.find_or_create(payload_hash["url"]),
         :requested_at    => Time.parse(payload_hash["requestedAt"]),
         :responded_in    => payload_hash["respondedIn"],
-        :request_type_id => RequestType.find_request_type_id(payload_hash["requestType"]),
-        :referred_by_id  => ReferredBy.referred_by_table(payload_hash["referredBy"]),
+        :request_type_id => RequestType.find_or_create(payload_hash["requestType"]),
+        :referred_by_id  => ReferredBy.find_or_create(payload_hash["referredBy"]),
         :parameters      => payload_hash["parameters"].join(","),
-        :event_name_id   => EventName.event_names_table(payload_hash["eventName"]),
-        :user_agent_id   => Agent.user_agents_table(payload_hash["userAgent"]),
-        :resolution_id   => Resolution.find_resolution_id(payload_hash["resolutionWidth"],
+        :event_name_id   => EventName.find_or_create(payload_hash["eventName"]),
+        :user_agent_id   => Agent.find_or_create(payload_hash["userAgent"]),
+        :resolution_id   => Resolution.find_or_create(payload_hash["resolutionWidth"],
                                                           payload_hash["resolutionHeight"]),
-        :ip_id           => Ip.ip_table(payload_hash["ip"]),
-        :identifier_id   => Identifier.get_id(identifier))
+        :ip_id           => Ip.find_or_create(payload_hash["ip"]),
+        :identifier_id   => Identifier.find(identifier)[:id]
+      )
     end
 
     def self.create(incoming_data)
@@ -63,20 +64,21 @@ module TrafficSpy
     end
 
     def self.requested_at_exists?(data)
-      table.select(:requested_at)
-           .to_a.any? {|item| item[:requested_at] == data}
+      !table.select(:requested_at)
+           .where(:requested_at => data)
+           .empty?
     end
 
     def self.responded_in_exists?(data)
-      table.select(:responded_in)
-           .to_a.any? { |item| item[:responded_in] == data }
+      !table.select(:responded_in)
+           .where(:responded_in => data)
+           .empty?
     end
 
     def self.parameters_exists?(data)
-      table.select(:parameters)
-           .to_a.any? { |item| item[:parameters] == data.join(",") }
+      !table.select(:parameters)
+           .where(:parameters => data.join(","))
+           .empty?
     end
-
-
   end
 end
