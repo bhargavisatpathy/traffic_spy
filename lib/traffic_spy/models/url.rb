@@ -25,23 +25,35 @@ module TrafficSpy
     end
 
     def self.rank_url(identifier)
+      rooturl_length = identifier[:rooturl].length
       DB.from(:payloads)
         .select(:url, :count)
         .where(:identifier_id => identifier[:id])
         .join(:urls, :id => :url_id)
         .group_and_count(:url)
-        .order(Sequel.desc(:count)).to_a
+        .order(Sequel.desc(:count))
+        .map do |row|
+          row[:relative_path] = row[:url].slice(rooturl_length..-1)
+          row
+        end
     end
 
     def self.rank_url_by_reponse_time(identifier)
       # DB.from(:payloads)
-      #   .select(:url, avg(:responded_in))
-      #   .where(:identifier_id => identifier_id)
+      #   .select(:url)
+      #   .where(:identifier_id => identifier[:id])
       #   .join(:urls, :id => :url_id)
       #   .group_by(:url)
-      #   .to_a
-        # .order(Sequel.desc(:avg)).to_a
-      DB.fetch("select url, avg(responded_in) from payloads pl join urls u on pl.url_id = u.id where pl.identifier_id = #{identifier[:id]} group by u.url order by avg desc")
+      #   .avg(:payloads__responded_in)
+      #   .order(Sequel.desc(:avg))
+      rooturl_length = identifier[:rooturl].length
+      DB.fetch("select url, avg(responded_in) from payloads pl join urls u on \
+        pl.url_id = u.id where pl.identifier_id = #{identifier[:id]} \
+        group by u.url order by avg desc").to_a
+        .map do |row|
+          row[:relative_path] = row[:url].slice(rooturl_length..-1)
+          row
+        end
     end
 
     def self.longest_response_time(identifier, url)
@@ -66,43 +78,39 @@ module TrafficSpy
     end
 
     def self.http_verbs(identifier, url)
-      request_type_ids = DB.from(:payloads)
-                           .select_group(:request_type_id)
-                           .where(:identifier_id => identifier[:id], :url => url)
-                           .join(:urls, :id => :url_id)
-
-      DB.from(:request_types)
-        .select(:request_type)
-        .join(request_type_ids, :request_type_id => :id)
+      DB.from(:payloads)
+        .select_group(:request_type)
+        .where(:identifier_id => identifier[:id], :url => url)
+        .join(:urls, :id => :url_id)
+        .join(:request_types, :id => :payloads__request_type_id)
         .map { |row| row[:request_type] }
     end
 
     def self.popular_referrers(identifier, url)
-      referrer_ids = DB.from(:payloads)
-                      .select(:referred_by_id, :count)
-                      .where(:identifier_id => identifier[:id], :url => url)
-                      .join(:urls, :id => :url_id)
-                      .group_and_count(:referred_by_id)
-                      .order(Sequel.desc(:count))
-
-      DB.from(:referred_bys)
-        .select(:referred_by)
-        .join(referrer_ids, :referred_by_id => :id)
-        .map { |row| row[:referred_by] }
+      DB.from(:payloads)
+        .select(:referred_by, :count)
+        .where(:identifier_id => identifier[:id], :url => url)
+        .join(:urls, :id => :url_id)
+        .join(:referred_bys, :id => :payloads__referred_by_id)
+        .group_and_count(:referred_by)
+        .order(Sequel.desc(:count))
     end
 
     def self.popular_user_agents(identifier, url)
-      user_agent_ids = DB.from(:payloads)
-                         .select(:user_agent_id)
-                         .where(:identifier_id => identifier[:id], :url => url)
-                         .join(:urls, :id => :url_id)
-
-      DB.from(:user_agents)
-        .select(:browser, :os, :count)
-        .join(user_agent_ids, :user_agent_id => :id)
+      DB.from(:payloads)
+        .select(:browser, :os, :count )
+        .where(:identifier_id => identifier[:id], :url => url)
+        .join(:urls, :id => :url_id)
+        .join(:user_agents, :id => :payloads__user_agent_id)
         .group_and_count(:browser, :os)
         .order(Sequel.desc(:count))
-        .to_a
+
+    #   DB.from(:user_agents)
+    #     .select(:browser, :os, :count)
+    #     .join(user_agent_ids, :user_agent_id => :id)
+    #     .group_and_count(:browser, :os)
+    #     .order(Sequel.desc(:count))
+    #     .to_a
     end
   end
 end

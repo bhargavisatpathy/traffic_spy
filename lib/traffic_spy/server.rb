@@ -20,25 +20,30 @@ module TrafficSpy
     end
 
     get '/sources/:identifier' do
-      identifier         = Identifier.find(params[:identifier])
-      @rank_url          = Url.rank_url(identifier)
-      @rank_browser      = Agent.rank_browser(identifier)
-      @rank_os           = Agent.rank_os(identifier)
-      @resolution        = Resolution.display_resolution(identifier)
-      @avg_response_time = Url.rank_url_by_reponse_time(identifier)
-      erb :identifier_display
+      if Identifier.exists?(params[:identifier])
+        @identifier        = Identifier.find(params[:identifier])
+        @rank_url          = Url.rank_url(@identifier)
+        @rank_browser      = Agent.rank_browser(@identifier)
+        @rank_os           = Agent.rank_os(@identifier)
+        @resolution        = Resolution.display_resolution(@identifier)
+        @avg_response_time = Url.rank_url_by_reponse_time(@identifier)
+        erb :identifier_display
+      else
+        @message = "The identifier #{params[:identifier]} has not been registered"
+        erb :error
+      end
     end
 
     get '/sources/:identifier/urls/:relative_path' do
       identifier = Identifier.find(params[:identifier])
       @url = identifier[:rooturl] +"/"+ params[:relative_path]
       if Url.exists?(@url)
-        @longest_response_time = Url.longest_response_time(identifier, @url)
+        @longest_response_time  = Url.longest_response_time(identifier, @url)
         @shortest_response_time = Url.shortest_response_time(identifier, @url)
-        @average_response_time = Url.average_response_time(identifier, @url)
-        @http_verbs = Url.http_verbs(identifier, @url)
-        @popular_referrers = Url.popular_referrers(identifier, @url)
-        @popular_user_agents = Url.popular_user_agents(identifier, @url)
+        @average_response_time  = Url.average_response_time(identifier, @url)
+        @http_verbs             = Url.http_verbs(identifier, @url)
+        @popular_referrers      = Url.popular_referrers(identifier, @url)
+        @popular_user_agents    = Url.popular_user_agents(identifier, @url)
         erb :url_display
       else
         @message = "The url #{@url} has never been requested"
