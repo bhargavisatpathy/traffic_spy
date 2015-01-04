@@ -1,0 +1,9 @@
+<h3> Most Popular Referrers: </h3>
+<span id = "most_popular_referrers">
+  <% @popular_referrers.each do |row|%>
+  <%= row[:referred_by] %></br>
+<% end %>
+</span>
+</br>
+
+
