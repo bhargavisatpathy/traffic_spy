@@ -39,6 +39,7 @@ module TrafficSpy
         @shortest_response_time = Url.shortest_response_time(identifier, @url)
         @average_response_time = Url.average_response_time(identifier, @url)
         @http_verbs = Url.http_verbs(identifier, @url)
+        @popular_referrers = Url.popular_referrers(identifier, @url)
         erb :url_display
       else
         @message = "The url #{@url} has never been requested"

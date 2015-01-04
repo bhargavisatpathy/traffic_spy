@@ -67,15 +67,28 @@ module TrafficSpy
 
     def self.http_verbs(identifier, url)
       request_type_ids = DB.from(:payloads)
-        .select_group(:request_type_id)
-        .where(:identifier_id => identifier[:id])
-        .join(:urls, :id => :url_id)
-        .where(:url => url)
+                           .select_group(:request_type_id)
+                           .where(:identifier_id => identifier[:id], :url => url)
+                           .join(:urls, :id => :url_id)
 
       DB.from(:request_types)
         .select(:request_type)
-        .where(:id => request_type_ids).to_a
+        .join(request_type_ids, :request_type_id => :id)
         .map { |row| row[:request_type] }
+    end
+
+    def self.popular_referrers(identifier, url)
+      referrer_ids = DB.from(:payloads)
+                      .select(:referred_by_id, :count)
+                      .where(:identifier_id => identifier[:id], :url => url)
+                      .join(:urls, :id => :url_id)
+                      .group_and_count(:referred_by_id)
+                      .order(Sequel.desc(:count))
+
+      DB.from(:referred_bys)
+        .select(:referred_by)
+        .join(referrer_ids, :referred_by_id => :id)
+        .map { |row| row[:referred_by] }
     end
   end
 end
