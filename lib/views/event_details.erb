@@ -10,12 +10,12 @@
 
 
 <div id="hour_by_hour">
-  <% events_by_hour.each do |item| %>
+  <% events_by_hour.group_by {|item| item[0]}.each do |key, value| %>
     <span id = "hour_recieved">
-      <%="#{item[0]}"%>
+      <%=key%>
     </span>
     <span id = "times_received">
-      <%=item[1]%>
+      <%=value.count%>
     </span>
   </br>
   <%end%>
