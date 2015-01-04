@@ -3,20 +3,28 @@
 <h2>
   Event details for <%="#{event_name.capitalize}"%>
 </h2>
-
-<p>
-  <%="Event was recieved #{total_count} times"%>
-</p>
-
-
-<div id="hour_by_hour">
-  <% events_by_hour.group_by {|item| item[0]}.each do |key, value| %>
-    <span id = "hour_recieved">
-      <%=key%>
-    </span>
-    <span id = "times_received">
-      <%=value.count%>
-    </span>
+<% if events_by_hour.empty? %>
+  <span id = "no_event">
+    No Event for <%= "#{event_name}" %> has been defined.
+  </span>
+  <span id = "events_index">
+    <a href="/sources/<%=identifier%>/events"><%="Events Index"%></a>
+  </span>
   </br>
-  <%end%>
-</div>
+<% else %>
+  <p>
+    <%="Event was recieved #{total_count} times"%>
+  </p>
+
+  <div id="hour_by_hour">
+    <% events_by_hour.group_by {|item| item[0]}.each do |key, value| %>
+      <span id = "hour_recieved">
+        <%=key%>
+      </span>
+      <span id = "times_received">
+        <%=value.count%>
+      </span>
+    </br>
+    <%end%>
+  </div>
+<% end %>

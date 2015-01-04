@@ -63,7 +63,8 @@ module TrafficSpy
       event_details = EventName.event_details(Identifier.find(params[:identifier]), event_name)
       events_by_hour = EventName.hour_by_hour(event_details)
       total_count = EventName.total_count(event_details)
-      erb :event_details, locals: {event_name:     event_name,
+      erb :event_details, locals: {identifier:     identifier,
+                                   event_name:     event_name,
                                    events_by_hour: events_by_hour,
                                    total_count:    total_count
                                    }
