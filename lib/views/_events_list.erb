@@ -1,14 +1,14 @@
-<h2>Events For <%="#{@identifier.capitalize}"%></h2>
+<h3>Events For <%="#{@identifier.capitalize}"%></h3>
 <% if @events_list.empty? %>
   <p>
     There are no events defined for <%="#{@identifier.capitalize}"%>
   </p>
 <% else %>
    <% @events_list.each do |row| %>
-  <span id = "event_names">
+  <div id = "event_names">
     <a href="/sources/<%= @identifier %>/events/<%=row[0]%>"><%="#{row[0]}"%></a>
-  </span>
-  <span id = "event_count"><%= row[1] %></span>
+  </div>
+  <div id = "event_count"><%= row[1] %></div>
   </br>
   <% end %>
 
