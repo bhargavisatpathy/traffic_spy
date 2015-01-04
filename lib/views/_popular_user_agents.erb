@@ -1,0 +1,6 @@
+<h3> Most Popular User Agents: </h3>
+<span id = "most_popular_user_agents">
+  <% @popular_user_agents.each do |row| %>
+    <%= row[:browser] +'/'+ row[:os] %></br>
+  <% end %>
+</span>

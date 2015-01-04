@@ -2,37 +2,10 @@
 
 <h2><%= @url %></h2>
 
-<span id = "longest_response_time">
-  Longest Response Time: <%= @longest_response_time %>ms
-</span>
-</br>
+<%= erb :_response_time %>
 
-<span id = "shortest_response_time">
-  Shortest Response Time: <%= @shortest_response_time %>ms
-</span>
-</br>
+<%= erb :_http_verbs %>
 
-<span id = "average_response_time">
-  Average Response Time: <%= @average_response_time.to_f %>ms
-</span>
-</br>
+<%= erb :_popular_referrers %>
 
-<span id = "http_verbs_used">
-  Http Verbs Used: <%= @http_verbs.join(', ') %>
-</span>
-</br>
-
-<h3> Most Popular Referrers: </h3>
-<span id = "most_popular_referrers">
-  <% @popular_referrers.each do |row|%>
-  <%= row[:referred_by] %></br>
-<% end %>
-</span>
-</br>
-
-<h3> Most Popular User Agents: </h3>
-<span id = "most_popular_user_agents">
-  <% @popular_user_agents.each do |row| %>
-    <%= row[:browser] +'/'+ row[:os] %></br>
-  <% end %>
-</span>
+<%= erb :_popular_user_agents %>
