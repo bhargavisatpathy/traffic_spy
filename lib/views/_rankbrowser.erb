@@ -1,0 +1,8 @@
+<h2>Browser Breakdown</h2>
+<% @rank_browser.each do |row| %>
+  <span id = "browser"><%= row[:browser] %></span>
+  <span id = "browser_count"><%= row[:count] %></span>
+  </br>
+<% end %>
+
+

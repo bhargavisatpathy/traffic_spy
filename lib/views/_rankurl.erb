@@ -1,0 +1,12 @@
+<h2>URLs By Rank</h2>
+<% @rank_url.each do |row| %>
+  <span id = "url">
+    <a href=<%= "/sources/#{@identifier[:identifier]}/urls#{row[:relative_path]}" %>>
+      <%= row[:url] %>
+    </a>
+  </span>
+  <span id = "url_count"><%= row[:count] %></span>
+  </br>
+<% end %>
+
+
