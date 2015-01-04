@@ -5,9 +5,8 @@ module TrafficSpy
     end
 
     def self.exists?(resolution_width, resolution_height)
-      !table.select(1)
-      .where(:width => resolution_width, :height => resolution_height)
-      .empty?
+      !table.where(:width => resolution_width, :height => resolution_height)
+            .empty?
     end
 
     def self.find_or_create(resolution_width, resolution_height)
