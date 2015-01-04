@@ -23,6 +23,7 @@ module TrafficSpy
       protected!
       clean_param! :identifier
       if Identifier.exists?(params[:identifier])
+        @event_identifier  = params[:identifier]
         @identifier        = Identifier.find(params[:identifier])
         @rank_url          = Url.rank_url(@identifier)
         @rank_browser      = Agent.rank_browser(@identifier)
@@ -69,7 +70,7 @@ module TrafficSpy
       protected!
       identifier = params[:identifier]
       event_name = params[:event_name]
-      event_details = EventName.event_details(Identifier.find(params[:identifier]), event_name)
+      event_details = EventName.event_details(Identifier.find(identifier), event_name)
       events_by_hour = EventName.hour_by_hour(event_details)
       total_count = EventName.total_count(event_details)
       erb :event_details, locals: {identifier:     identifier,
