@@ -28,7 +28,7 @@ module TrafficSpy
         :event_name_id   => EventName.find_or_create(payload_hash["eventName"]),
         :user_agent_id   => Agent.find_or_create(payload_hash["userAgent"]),
         :resolution_id   => Resolution.find_or_create(payload_hash["resolutionWidth"],
-                                                          payload_hash["resolutionHeight"]),
+                                                      payload_hash["resolutionHeight"]),
         :ip_id           => Ip.find_or_create(payload_hash["ip"]),
         :identifier_id   => Identifier.find(identifier)[:id]
       )
@@ -44,7 +44,6 @@ module TrafficSpy
                         body: "Application Not Registered"
                       }
       elsif duplicate_payload?(incoming_data["payload"])
-        puts "DUPLICATE PAYLOAD"
         return_hash = { status: 403,
                         body: "Already received request"
                       }
@@ -65,20 +64,20 @@ module TrafficSpy
 
     def self.requested_at_exists?(data)
       !table.select(:requested_at)
-           .where(:requested_at => data)
-           .empty?
+            .where(:requested_at => data)
+            .empty?
     end
 
     def self.responded_in_exists?(data)
       !table.select(:responded_in)
-           .where(:responded_in => data)
-           .empty?
+            .where(:responded_in => data)
+            .empty?
     end
 
     def self.parameters_exists?(data)
       !table.select(:parameters)
-           .where(:parameters => data.join(","))
-           .empty?
+            .where(:parameters => data.join(","))
+            .empty?
     end
   end
 end

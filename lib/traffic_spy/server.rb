@@ -41,8 +41,9 @@ module TrafficSpy
       end
     end
 
-    get '/sources/:identifier/urls/:relative_path' do
+    get '/sources/:identifier/urls/:relative_path.?:format?' do
       protected!
+      clean_param! :relative_path
       identifier = Identifier.find(params[:identifier])
       @url = identifier[:rooturl] +"/"+ params[:relative_path]
       if Url.exists?(@url)
@@ -52,7 +53,11 @@ module TrafficSpy
         @http_verbs             = Url.http_verbs(identifier, @url)
         @popular_referrers      = Url.popular_referrers(identifier, @url)
         @popular_user_agents    = Url.popular_user_agents(identifier, @url)
-        erb :url_display
+        if params[:format] == :json
+          urls_display_json
+        else
+          erb :url_display
+        end
       else
         @message = "The url #{@url} has never been requested"
         erb :error
@@ -66,14 +71,19 @@ module TrafficSpy
       erb :events
     end
 
-    get '/sources/:identifier/events/:event_name' do
+    get '/sources/:identifier/events/:event_name.?:format?' do
       protected!
+      clean_param! :event_name
       @identifier = params[:identifier]
       @event_name = params[:event_name]
       @event_details = EventName.event_details(Identifier.find(@identifier), @event_name)
       @events_by_hour = EventName.hour_by_hour(@event_details)
       @total_count = EventName.total_count(@event_details)
-      erb :event_details
+      if params[:format] == :json
+        event_name_display_json
+      else
+        erb :event_details
+      end
     end
 
     def protected!
@@ -103,6 +113,29 @@ module TrafficSpy
         rank_os: @rank_os,
         resolution: @resolution,
         avg_response_time: @avg_response_time
+      }.to_json
+    end
+
+    def urls_display_json
+      content_type :json
+      {
+        longest_response_time: @longest_response_time,
+        shortest_response_time: @shortest_response_time,
+        average_response_time: @average_response_time,
+        http_verbs: @http_verbs,
+        popular_referrers: @popular_referrers,
+        popular_user_agents: @popular_user_agents
+      }.to_json
+    end
+
+    def event_name_display_json
+      content_type :json
+      {
+        identifier: @identifier,
+        event_name: @event_name,
+        event_details: @event_details,
+        events_by_hour: @events_by_hour,
+        total_count: @total_count,
       }.to_json
     end
 

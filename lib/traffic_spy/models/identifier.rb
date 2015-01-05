@@ -18,10 +18,6 @@ module TrafficSpy
                                    :rooturl => incoming_data["rootUrl"])
     end
 
-    # def self.exists?(identifier)
-    #   table.select(:identifier).to_a.any? { |item| item[:identifier] == identifier}
-    # end
-
     def self.missing_identifier?(incoming_data)
       incoming_data["identifier"].nil? || incoming_data["rootUrl"].nil?
     end

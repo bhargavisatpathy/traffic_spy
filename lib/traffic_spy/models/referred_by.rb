@@ -18,9 +18,7 @@ module TrafficSpy
         referred_by_id = table.select(:id)
                               .where(:referred_by => incoming_referred_by)
                               .first[:id]
-        puts "We found referred by"
       else
-        puts "we didn't find referred by"
         table.insert(:referred_by => incoming_referred_by)
         referred_by_id = table.where(:referred_by => incoming_referred_by)
                               .first[:id]

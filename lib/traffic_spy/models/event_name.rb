@@ -18,9 +18,7 @@ module TrafficSpy
         event_name_id = table .select(:id)
                               .where(:event_name => incoming_event_name)
                               .first[:id]
-        puts "We found event name"
       else
-        puts "we didn't find event name"
         table.insert(:event_name => incoming_event_name)
         event_name_id = table .where(:event_name => incoming_event_name)
                               .first[:id]
@@ -35,8 +33,6 @@ module TrafficSpy
                            .order(Sequel.desc(:count))
                            .to_a
                            .map{|entry| [entry[:event_name], entry[:count]]}
-      puts event_names.inspect
-      event_names
     end
 
     def self.event_details(identifier_id, event_name)
@@ -47,9 +43,6 @@ module TrafficSpy
                              .group_and_count(:requested_at)
                              .to_a
                              .map{|entry| [entry[:requested_at], entry[:count]]}
-      puts event_details.inspect
-                            #  .group_and_count(:requested_at)
-      event_details
     end
 
     def self.hour_by_hour(event_details)
@@ -64,10 +57,8 @@ module TrafficSpy
         else
           time << ["#{time_12(item[0])}am", item[1]]
         end
-        puts time.inspect
         time.flatten
       end
-      puts event_by_hour.inspect
       event_by_hour
     end
 

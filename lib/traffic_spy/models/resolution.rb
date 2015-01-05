@@ -13,9 +13,7 @@ module TrafficSpy
       if self.exists?(resolution_width, resolution_height)
         resolution_id = table.select(:id).where(:width => resolution_width)
                              .where(:height => resolution_height).first[:id]
-        puts "We found resolution"
       else
-        puts "we didn't find resolution"
         table.insert(:width => resolution_width, :height => resolution_height)
         resolution_id = table.where(:width => resolution_width,
                                     :height => resolution_height).first[:id]
@@ -30,7 +28,6 @@ module TrafficSpy
                      .join(:resolutions, :id => :resolution_id)
                      .select(:width, :height).to_a
                      .map {|entry| [entry[:width], entry[:height]] }.uniq
-      puts resolution.inspect
       resolution
     end
   end

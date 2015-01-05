@@ -18,14 +18,10 @@ module TrafficSpy
         user_agent_id = table.select(:id)
                              .where(:user_agent => incoming_user_agent)
                              .first[:id]
-        puts "We found user agents"
       else
-        puts "we didn't find user agents"
         user_agent = UserAgent.parse(incoming_user_agent)
         browser = user_agent.browser
-        puts browser
         os = user_agent.platform
-        puts os
         table.insert(:user_agent => incoming_user_agent,
                      :browser => browser,
                      :os => os)

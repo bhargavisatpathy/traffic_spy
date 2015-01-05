@@ -15,9 +15,7 @@ module TrafficSpy
     def self.find_or_create(incoming_url)
       if exists?(incoming_url)
         url_id = table.select(:id).where(:url => incoming_url).first[:id]
-        puts "We found URL ID"
       else
-        puts "we didn't find URL ID"
         table.insert(:url => incoming_url)
         url_id = table.where(:url => incoming_url).first[:id]
       end
@@ -39,13 +37,6 @@ module TrafficSpy
     end
 
     def self.rank_url_by_reponse_time(identifier)
-      # DB.from(:payloads)
-      #   .select(:url)
-      #   .where(:identifier_id => identifier[:id])
-      #   .join(:urls, :id => :url_id)
-      #   .group_by(:url)
-      #   .avg(:payloads__responded_in)
-      #   .order(Sequel.desc(:avg))
       rooturl_length = identifier[:rooturl].length
       DB.fetch("select url, avg(responded_in) from payloads pl join urls u on \
         pl.url_id = u.id where pl.identifier_id = #{identifier[:id]} \
@@ -93,7 +84,7 @@ module TrafficSpy
         .join(:urls, :id => :url_id)
         .join(:referred_bys, :id => :payloads__referred_by_id)
         .group_and_count(:referred_by)
-        .order(Sequel.desc(:count))
+        .order(Sequel.desc(:count)).to_a
     end
 
     def self.popular_user_agents(identifier, url)
@@ -103,14 +94,7 @@ module TrafficSpy
         .join(:urls, :id => :url_id)
         .join(:user_agents, :id => :payloads__user_agent_id)
         .group_and_count(:browser, :os)
-        .order(Sequel.desc(:count))
-
-    #   DB.from(:user_agents)
-    #     .select(:browser, :os, :count)
-    #     .join(user_agent_ids, :user_agent_id => :id)
-    #     .group_and_count(:browser, :os)
-    #     .order(Sequel.desc(:count))
-    #     .to_a
+        .order(Sequel.desc(:count)).to_a
     end
   end
 end
