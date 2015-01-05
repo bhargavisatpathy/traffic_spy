@@ -22,7 +22,7 @@ module TrafficSpy
     end
 
     def self.display_resolution(identifier)
-      resolution = DB.from(:payloads)
+      resolution = Payload.table
                      .select(:resolution_id)
                      .where(:identifier_id => identifier[:id])
                      .join(:resolutions, :id => :resolution_id)
