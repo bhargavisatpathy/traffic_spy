@@ -24,7 +24,7 @@ module TrafficSpy
 
     def self.rank_url(identifier)
       rooturl_length = identifier[:rooturl].length
-      DB.from(:payloads)
+      Payload.table
         .select(:url, :count)
         .where(:identifier_id => identifier[:id])
         .join(:urls, :id => :url_id)
@@ -48,28 +48,28 @@ module TrafficSpy
     end
 
     def self.longest_response_time(identifier, url)
-      DB.from(:payloads)
+      Payload.table
         .where(:identifier_id => identifier[:id], :url => url)
         .join(:urls, :id => :url_id)
         .max(:responded_in)
     end
 
     def self.shortest_response_time(identifier, url)
-      DB.from(:payloads)
+      Payload.table
         .where(:identifier_id => identifier[:id], :url => url)
         .join(:urls, :id => :url_id)
         .min(:responded_in)
     end
 
     def self.average_response_time(identifier, url)
-      DB.from(:payloads)
+      Payload.table
         .where(:identifier_id => identifier[:id], :url => url)
         .join(:urls, :id => :url_id)
         .avg(:responded_in)
     end
 
     def self.http_verbs(identifier, url)
-      DB.from(:payloads)
+      Payload.table
         .select_group(:request_type)
         .where(:identifier_id => identifier[:id], :url => url)
         .join(:urls, :id => :url_id)
@@ -78,7 +78,7 @@ module TrafficSpy
     end
 
     def self.popular_referrers(identifier, url)
-      DB.from(:payloads)
+      Payload.table
         .select(:referred_by, :count)
         .where(:identifier_id => identifier[:id], :url => url)
         .join(:urls, :id => :url_id)
@@ -88,7 +88,7 @@ module TrafficSpy
     end
 
     def self.popular_user_agents(identifier, url)
-      DB.from(:payloads)
+      Payload.table
         .select(:browser, :os, :count )
         .where(:identifier_id => identifier[:id], :url => url)
         .join(:urls, :id => :url_id)

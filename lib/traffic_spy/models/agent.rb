@@ -33,7 +33,7 @@ module TrafficSpy
     end
 
     def self.rank_browser(identifier)
-      DB.from(:payloads)
+      Payload.table
         .select(:browser, :count)
         .where(:identifier_id => identifier[:id])
         .join(:user_agents, :id => :user_agent_id)
@@ -42,7 +42,7 @@ module TrafficSpy
     end
 
     def self.rank_os(identifier)
-      DB.from(:payloads)
+      Payload.table
         .select(:os, :count)
         .where(:identifier_id => identifier[:id])
         .join(:user_agents, :id => :user_agent_id)
