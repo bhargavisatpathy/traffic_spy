@@ -17,9 +17,7 @@ module TrafficSpy
         ip_id = table .select(:id)
                       .where(:ip => incoming_ip)
                       .first[:id]
-        puts "We found ip"
       else
-        puts "we didn't find ip"
         table.insert(:ip => incoming_ip)
         ip_id = table.where(:ip => incoming_ip).first[:id]
       end

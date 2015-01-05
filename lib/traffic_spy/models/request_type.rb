@@ -18,9 +18,7 @@ module TrafficSpy
         request_type_id = table.select(:id)
                                .where(:request_type => incoming_request_type)
                                .first[:id]
-        puts "We found request type"
       else
-        puts "we didn't find request type"
         table.insert(:request_type => incoming_request_type)
         request_type_id = table .where(:request_type => incoming_request_type)
                                 .first[:id]
