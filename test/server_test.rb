@@ -51,64 +51,56 @@ module TrafficSpy
       assert_equal "Application Not Registered", last_response.body
     end
 
-    def test_post_sources_identifier_for_success
+    def test_identifier_page_protected
       post '/sources', 'identifier=jumpstartlab&rootUrl=http://jumpstartlab.com'
-      post '/sources/jumpstartlab/data',
-      "payload={\"url\":\"h\",\"requestedAt\":\"cheese\",\"respondedIn\":37,\"referredBy\":\"fries\",
-      \"requestType\":\"GET\",\"parameters\":[],\"eventName\": \"frog\",\"userAgent\":\"Mozilla/5.0\",
-      \"resolutionWidth\":\"1920\",\"resolutionHeight\":\"1280\",\"ip\":\"63.29.38.211\"}"
-      assert_equal 200, last_response.status
+      get "/sources/jumpstartlab"
+      assert_equal 401, last_response.status
     end
 
-    def test_post_sources_identifier_does_not_save_a_duplicate_payload
-      skip
+    def test_identifier_page_for_bad_credentials
       post '/sources', 'identifier=jumpstartlab&rootUrl=http://jumpstartlab.com'
-      post '/sources/jumpstartlab/data',
-      "payload={\"url\":\"h\",\"requestedAt\":\"cheese\",\"respondedIn\":37,\"referredBy\":\"fries\",
-      \"requestType\":\"GET\",\"parameters\":[],\"eventName\": \"frog\",\"userAgent\":\"Mozilla/5.0\",
-      \"resolutionWidth\":\"1920\",\"resolutionHeight\":\"1280\",\"ip\":\"63.29.38.211\"}"
-      post '/sources/jumpstartlab/data',
-      "payload={\"url\":\"h\",\"requestedAt\":\"cheese\",\"respondedIn\":37,\"referredBy\":\"fries\",
-      \"requestType\":\"GET\",\"parameters\":[],\"eventName\": \"frog\",\"userAgent\":\"Mozilla/5.0\",
-      \"resolutionWidth\":\"1920\",\"resolutionHeight\":\"1280\",\"ip\":\"63.29.38.211\"}"
-      assert_equal 403, last_response.status
-      assert_equal "Already received request", last_response.body
+      get "/sources/jumpstartlab"
+      authorize 'user', 'worngpassword'
+      get "/sources/jumpstartlab"
+      assert_equal 401, last_response.status
     end
 
-    def test_get_sources_identifier_displays_resolution
-      skip
+    def test_url_page_protected
       post '/sources', 'identifier=jumpstartlab&rootUrl=http://jumpstartlab.com'
-      post '/sources/jumpstartlab/data',
-      "payload={\"url\":\"h\",\"requestedAt\":\"cheese\",\"respondedIn\":37,\"referredBy\":\"fries\",
-      \"requestType\":\"GET\",\"parameters\":[],\"eventName\": \"frog\",\"userAgent\":\"Mozilla/5.0\",
-      \"resolutionWidth\":\"1920\",\"resolutionHeight\":\"1280\",\"ip\":\"63.29.38.211\"}"
-      get '/sources/jumpstartlab'
-      assert_equal 200, last_response.status
-      # within("#resolution_width") do
-      #    assert has_css?("Width: 1920, ")
-      # end
+      get "/sources/jumpstartlab/urls/blog"
+      assert_equal 401, last_response.status
     end
 
-    def test_get_sources_identifier_events_displays_events_index
+    def test_url_page_for_bad_credentials
       post '/sources', 'identifier=jumpstartlab&rootUrl=http://jumpstartlab.com'
-      post '/sources/jumpstartlab/data',
-      "payload={\"url\":\"h\",\"requestedAt\":\"cheese\",\"respondedIn\":37,\"referredBy\":\"fries\",
-      \"requestType\":\"GET\",\"parameters\":[],\"eventName\": \"frog\",\"userAgent\":\"Mozilla/5.0\",
-      \"resolutionWidth\":\"1920\",\"resolutionHeight\":\"1280\",\"ip\":\"63.29.38.211\"}"
-      get '/sources/jumpstartlab/events'
-      assert_equal 200, last_response.status
+      get "/sources/jumpstartlab/urls/blog"
+      authorize 'user', 'worngpassword'
+      get "/sources/jumpstartlab/urls/blog"
+      assert_equal 401, last_response.status
     end
 
-    def test_get_sources_identifier_events_does_not_display_events
-      skip
+    def test_event_name_page_protected
       post '/sources', 'identifier=jumpstartlab&rootUrl=http://jumpstartlab.com'
-      post '/sources/jumpstartlab/data',
-      "payload={\"url\":\"h\",\"requestedAt\":\"cheese\",\"respondedIn\":37,\"referredBy\":\"fries\",
-      \"requestType\":\"GET\",\"parameters\":[],\"eventName\": \"" "\",\"userAgent\":\"Mozilla/5.0\",
-      \"resolutionWidth\":\"1920\",\"resolutionHeight\":\"1280\",\"ip\":\"63.29.38.211\"}"
-      get '/sources/jumpstartlab/events'
-      assert_equal 200, last_response.status
-      assert_equal "No events defined", last_response.body
+      get "/sources/jumpstartlab/events/socialLogin"
+      assert_equal 401, last_response.status
     end
+
+    def test_url_page_for_bad_credentials
+      post '/sources', 'identifier=jumpstartlab&rootUrl=http://jumpstartlab.com'
+      get "/sources/jumpstartlab/events/socialLogin"
+      authorize 'user', 'worngpassword'
+      get "/sources/jumpstartlab/events/socialLogin"
+      assert_equal 401, last_response.status
+    end
+
+    # def test_identifier_page_for_right_credentials
+    #   skip
+    #   post '/sources', 'identifier=jumpstartlab&rootUrl=http://jumpstartlab.com'
+    #   get "/sources/jumpstartlab"
+    #   authorize 'admin', 'admin'
+    #   get "/sources/jumpstartlab"
+    #   assert_equal 200, last_response.status
+    # end
+
   end
 end
